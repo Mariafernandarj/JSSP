@@ -1,0 +1,45 @@
+#Archivos binarios y ejecutables generados por Go
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+#Directorios de compilación/salida comunes
+
+/bin/
+/dist/
+/pkg/
+
+#Archivos temporales y respaldos de editores de texto 
+
+*~
+*.swp
+.swo
+#
+.#
+
+#Archivos de configuración de IDEs y editores
+
+.idea/
+.vscode/
+*.suo
+.ntvs
+*.njsproj
+*.sln
+
+#Archivos de cobertura de código y depuración
+
+*.cover
+*.gocov
+coverage.out
+
+#Archivos del sistema operativo
+
+.DS_Store
+.DS_Store?
+ehthumbs.db
+Thumbs.db
