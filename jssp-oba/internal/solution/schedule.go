@@ -3,12 +3,12 @@ package solution
 //Schedule representa el orden de procesamiensto de las peraciones
 // en cada máuina, los valores almacenados son ID de la operación
 
-type Scheduele struct {
+type Schedule struct {
 	MachineOrder [][]int
 }
 
 // NewSchedule crea una solución vacía para las máquinas de la instancia
-func NewSchedule(numMchines int) *Schedule {
+func NewSchedule(numMachines int) *Schedule {
 	return &Schedule{
 		MachineOrder: make([][]int, numMachines),
 	}
@@ -28,7 +28,7 @@ func (s *Schedule) NumMachines() int {
 
 // NumOperation devuelve el total de operaciones programadas
 func (s *Schedule) NumOpetions() int {
-	total = 0
+	total := 0
 	for _, sequence := range s.MachineOrder {
 		total += len(sequence)
 	}

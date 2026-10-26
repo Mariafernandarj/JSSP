@@ -8,7 +8,7 @@ func (s *Schedule) Clone() *Schedule {
 
 	clone := NewSchedule(len(s.MachineOrder))
 
-	for machine, sequnce := range s.MachineOrder {
+	for machine, sequence := range s.MachineOrder {
 		clone.MachineOrder[machine] = append([]int(nil), sequence...)
 	}
 

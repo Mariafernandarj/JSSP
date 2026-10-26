@@ -22,7 +22,7 @@ func FromOperationSequence(
 		)
 	}
 
-	schedule := NewShedule(in.NumMachines)
+	schedule := NewSchedule(in.NumMachines)
 	seen := make([]bool, in.TotalOperations())
 
 	for _, id := range sequence {

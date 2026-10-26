@@ -34,13 +34,13 @@ func Parse(r io.Reader) (*Instance, error) {
 
 		//Permite comentarios con #
 		if idx := strings.Index(content, "#"); idx >= 0 {
-			content := content[:idx]
+			content = content[:idx]
 		}
 
 		for _, token := range strings.Fields(content) {
 			value, err := strconv.Atoi(token)
 			if err != nil {
-				return nil, Errorf(
+				return nil, fmt.Errorf(
 					"linea %d: entero inválido %q: %w",
 					line, token, err,
 				)
@@ -57,7 +57,7 @@ func Parse(r io.Reader) (*Instance, error) {
 		return nil, fmt.Errorf("instancia incompleta: se esperan n, m, cu y ci")
 	}
 
-	n, m := values[0], vaues[1]
+	n, m := values[0], values[1]
 	upper, lower := values[2], values[3]
 
 	if n <= 0 || m <= 0 {

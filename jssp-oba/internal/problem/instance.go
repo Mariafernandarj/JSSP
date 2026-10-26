@@ -11,7 +11,7 @@ type Instance struct {
 }
 
 // OperationByID devuleve una operación por su ID
-func (in *Instance) OpertionByID(id int) (Operation, bool) {
+func (in *Instance) OperationByID(id int) (Operation, bool) {
 	if id < 0 || id >= len(in.Operations) {
 		return Operation{}, false
 	}
