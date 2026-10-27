@@ -46,4 +46,14 @@ func main() {
 	for machine, operations := range schedule.MachineOrder {
 		fmt.Printf("M%d: %v\n", machine, operations)
 	}
+
+	evaluation, err := objective.Evaluate(instance, schedule)
+	if err != nil {
+		// Manejar el error.
+	}
+
+	fmt.Printf("Makespan: %d\n", evaluation.Makespan)
+	fmt.Printf("Nodos en ciclos: %d\n", evaluation.CycleNodes)
+	fmt.Printf("Factible: %t\n", evaluation.Feasible)
+	fmt.Printf("Costo penalizado: %.6f\n", evaluation.Cost)
 }
