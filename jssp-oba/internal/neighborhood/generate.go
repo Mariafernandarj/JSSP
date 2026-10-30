@@ -9,7 +9,7 @@ import (
 // Generate genra un vecino medinat en intercambio adyacnete aleatorio
 func Generate(
 	schedule *solution.Schedule,
-) (*solution.Schedule, erro) {
+) (*solution.Schedule, error) {
 	if schedule == nil {
 		return nil, fmt.Errorf("la solución no puede ser nula")
 	}
@@ -23,7 +23,7 @@ func Generate(
 
 	for machine, order := range schedule.MachineOrder {
 		for position := 0; position+1 < len(order); position++ {
-			moves = append(modes, move{
+			moves = append(moves, move{
 				machine:  machine,
 				position: position,
 			})

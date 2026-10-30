@@ -80,7 +80,7 @@ func CalculateMakespan(g *Graph) (Metrics, error) {
 // EvaluateSchedule construe la gráfica y obtiene sus métricas
 func EvaluateSchedule(
 	in *problem.Instance,
-	schedule *solution.Shedule,
+	schedule *solution.Schedule,
 ) (Metrics, error) {
 	g, err := BuildGraph(in, schedule)
 	if err != nil {

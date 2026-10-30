@@ -2,7 +2,7 @@ package oba
 
 import (
 	"fmt"
-	"math/rand"
+	//"math/rand"
 
 	"jssp-oba/internal/neighborhood"
 	"jssp-oba/internal/objective"
@@ -50,6 +50,7 @@ func Solve(
 	threshold := 0.0
 	count := 1
 	age := config.Iterations // Simula la edad inicial grande
+	prevAge := config.Iterations
 	accepted := 0
 	completed := 0
 

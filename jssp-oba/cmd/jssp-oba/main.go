@@ -6,7 +6,7 @@ import (
 	"jssp-oba/internal/objective"
 	"jssp-oba/internal/problem"
 	"jssp-oba/internal/solution"
-	"log"
+	//"log"
 	"os"
 	"time"
 )
@@ -22,10 +22,23 @@ func main() {
 }
 
 func run() int {
-	instancePath := "data/instances/example.txt"
+	//instancePath := "data/instances/example.txt"
+	//instancePath := "data/instances/JSSP_50_20.txt"
+	instancePath := "data/instances/example-100.txt"
 
 	if len(os.Args) > 2 {
 		fmt.Fprintln(os.Stderr, "Uso: go run ./cmd/jssp-oba [archivo_instancia]")
+		return MINIC_EXIT_INVALID
+	}
+
+	if len(os.Args) == 2 {
+		instancePath = os.Args[1]
+	}
+
+	// Leer y validar la instancia
+	instance, err := problem.ParseFile(instancePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error al leer la instancia: %v\n", err)
 		return MINIC_EXIT_INVALID
 	}
 
@@ -48,7 +61,14 @@ func run() int {
 		}
 	}
 
-	initialEval, err := objective.Avaluate(instance, initial)
+	initial, err := solution.FromOperationSequence(instance, sequence)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error al crear la solución inicial: %v\n", err)
+		return MINIC_EXIT_INTERNAL
+	}
+
+	// Evaluar la solución inicial.
+	initialEval, err := objective.Evaluate(instance, initial)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error al evaluar la solución inicial: %v\n", err)
 		return MINIC_EXIT_INTERNAL

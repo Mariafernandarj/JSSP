@@ -17,14 +17,13 @@ type Evaluation struct {
 // Evaluate alcula el makespan, detecta ciclos y obtiene el costo penalizado
 func Evaluate(
 	in *problem.Instance,
-	in *problem.Instance,
 	schedule *solution.Schedule,
 ) (Evaluation, error) {
 	if in == nil {
 		return Evaluation{}, fmt.Errorf("la instancia no puede ser nula")
 	}
 
-	metrics, err := EvaluateSchedule(in, shedule)
+	metrics, err := EvaluateSchedule(in, schedule)
 	if err != nil {
 		return Evaluation{}, err
 	}
@@ -40,7 +39,7 @@ func Evaluate(
 
 	}
 
-	cost := normalized + float64(in.LowerBound)*float(metrics.CycleNodes)
+	cost := normalized + float64(in.LowerBound)*float64(metrics.CycleNodes)
 
 	return Evaluation{
 		Metrics: metrics,

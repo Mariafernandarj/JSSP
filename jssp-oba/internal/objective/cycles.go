@@ -1,4 +1,4 @@
-package objetive
+package objective
 
 import (
 	"fmt"
