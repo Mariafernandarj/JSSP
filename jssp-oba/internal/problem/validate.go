@@ -27,12 +27,14 @@ func Validate(in *Instance) error {
 		)
 	}
 
-	if in.LowerBound <= 0 ||
-		in.UpperBound <= in.LowerBound {
-		return fmt.Errorf("cotas inválida: inferior=%d, superior=%d",
-			in.LowerBound, in.UpperBound,
-		)
-	}
+	/*
+		if in.LowerBound <= 0 ||
+			in.UpperBound <= in.LowerBound {
+			return fmt.Errorf("cotas inválida: inferior=%d, superior=%d",
+				in.LowerBound, in.UpperBound,
+			)
+		}
+	*/
 
 	seenIDs := make([]bool, n*m)
 	machineLoad := make([]int, m)
@@ -111,6 +113,20 @@ func Validate(in *Instance) error {
 	if maxMachineLoad > computedLower {
 		computedLower = maxMachineLoad
 	}
+
+	/*
+		if in.LowerBound <= 0 {
+			return fmt.Errorf("cota inferior invalida")
+		}
+
+		if in.UpperBound <= 0 {
+			return fmt.Errorf("cota superior invalida")
+		}
+
+		if in.LowerBound > in.UpperBound {
+			return fmt.Errorf("la cota inferior no puede ser mayor que la superior")
+		}
+	*/
 
 	/*
 		if in.LowerBound != computedLower {

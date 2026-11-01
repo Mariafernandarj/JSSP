@@ -22,9 +22,9 @@ func main() {
 }
 
 func run() int {
-	//instancePath := "data/instances/example.txt"
+	instancePath := "data/instances/example.txt"
 	//instancePath := "data/instances/JSSP_50_20.txt"
-	instancePath := "data/instances/example-100.txt"
+	//instancePath := "data/instances/example-100.txt"
 
 	if len(os.Args) > 2 {
 		fmt.Fprintln(os.Stderr, "Uso: go run ./cmd/jssp-oba [archivo_instancia]")
@@ -75,7 +75,7 @@ func run() int {
 	}
 
 	fmt.Println("\n--- Solución inicial ---")
-	printSchedule(initial)
+	//printSchedule(initial)
 	printEvaluation(initialEval)
 
 	//Cunfirar OBA2-N
@@ -99,7 +99,7 @@ func run() int {
 
 	// 7. Mostrar la mejor solución encontrada.
 	fmt.Println("\n--- Resultado de OBA2-N ---")
-	printSchedule(result.BestSchedule)
+	//printSchedule(result.BestSchedule)
 	printEvaluation(result.Best)
 
 	fmt.Printf("Iteraciones ejecutadas: %d\n", result.Iterations)

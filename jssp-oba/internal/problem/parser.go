@@ -53,19 +53,18 @@ func Parse(r io.Reader) (*Instance, error) {
 		return nil, fmt.Errorf("leer instancia: %w", err)
 	}
 
-	if len(values) < 4 {
-		return nil, fmt.Errorf("instancia incompleta: se esperan n, m, cu y ci")
+	if len(values) < 2 {
+		return nil, fmt.Errorf("instancia incompleta: se esperan n, m")
 	}
 
 	n, m := values[0], values[1]
-	upper, lower := values[2], values[3]
 
 	if n <= 0 || m <= 0 {
 		return nil, fmt.Errorf("número de trabajos y máquinas deben ser positivos")
 	}
 
 	// Cada trabajo contiene m pares (maquina, duración)
-	expected := 4 + n*m*2
+	expected := 2 + n*m*2
 	if len(values) != expected {
 		return nil, fmt.Errorf(
 			"Cantidad de enteros incorrecta: se esperaban %d y se encntraron %d", expected, len(values),
@@ -75,13 +74,11 @@ func Parse(r io.Reader) (*Instance, error) {
 	instance := &Instance{
 		NumJobs:     n,
 		NumMachines: m,
-		UpperBound:  upper,
-		LowerBound:  lower,
 		Jobs:        make([]Job, n),
 		Operations:  make([]Operation, 0, n*m),
 	}
 
-	pos := 4
+	pos := 2
 	for j := 0; j < n; j++ {
 		job := Job{
 			ID:         j,
@@ -110,6 +107,9 @@ func Parse(r io.Reader) (*Instance, error) {
 	if err := Validate(instance); err != nil {
 		return nil, fmt.Errorf("instancia inválida: %w", err)
 	}
+
+	// 3. Calcular las cotas después de leer todas las operaciones.
+	CalculateBounds(instance)
 
 	return instance, nil
 
