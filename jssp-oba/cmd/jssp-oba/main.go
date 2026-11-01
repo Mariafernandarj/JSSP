@@ -5,8 +5,9 @@ import (
 	"jssp-oba/internal/oba"
 	"jssp-oba/internal/objective"
 	"jssp-oba/internal/problem"
+	"jssp-oba/internal/reporting"
 	"jssp-oba/internal/solution"
-	//"log"
+	"log"
 	"os"
 	"time"
 )
@@ -96,6 +97,20 @@ func run() int {
 		fmt.Fprintf(os.Stderr, "Error durante la búsqueda OBA2-N: %v\n", err)
 		return MINIC_EXIT_INTERNAL
 	}
+
+	// Exportar la mejor solución.
+	path, err := reporting.ExportResult(
+		"data/results",
+		instance,
+		*result,
+		elapsed,
+	)
+
+	if err != nil {
+		log.Fatalf("Error al exportar resultados: %v", err)
+	}
+
+	fmt.Printf("Resultado guardado en: %s\n", path)
 
 	// 7. Mostrar la mejor solución encontrada.
 	fmt.Println("\n--- Resultado de OBA2-N ---")
