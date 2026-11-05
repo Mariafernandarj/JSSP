@@ -2,7 +2,7 @@ package oba
 
 import (
 	"fmt"
-	//"math/rand"
+	"math/rand"
 
 	"jssp-oba/internal/neighborhood"
 	"jssp-oba/internal/objective"
@@ -24,6 +24,7 @@ func Solve(
 	in *problem.Instance,
 	initial *solution.Schedule,
 	config Config,
+	rng *rand.Rand,
 ) (*Result, error) {
 	if in == nil || initial == nil {
 		return nil, fmt.Errorf("la instancia y la solución inicial son obligatorias")
@@ -56,7 +57,7 @@ func Solve(
 
 	for i := 0; i < config.Iterations; i++ {
 		completed++
-		neighbor, err := neighborhood.Generate(current)
+		neighbor, err := neighborhood.Generate(current, rng)
 		if err != nil {
 			completed--
 			break

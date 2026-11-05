@@ -9,6 +9,7 @@ import (
 // Generate genra un vecino medinat en intercambio adyacnete aleatorio
 func Generate(
 	schedule *solution.Schedule,
+	rng *rand.Rand,
 ) (*solution.Schedule, error) {
 	if schedule == nil {
 		return nil, fmt.Errorf("la solución no puede ser nula")
@@ -34,7 +35,8 @@ func Generate(
 		return nil, fmt.Errorf("no existen movimientos posibles")
 	}
 
-	selected := moves[rand.Intn(len(moves))]
+	//selected := moves[rand.Intn(len(moves))]
+	selected := moves[rng.Intn(len(moves))]
 
 	return SwapAdjacent(
 		schedule,

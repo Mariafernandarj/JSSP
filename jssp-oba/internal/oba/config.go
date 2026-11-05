@@ -10,8 +10,8 @@ type Config struct {
 // DefaultConfig devuelve parámetros iniciales
 func DefaultConfig() Config {
 	return Config{
-		Iterations: 100000,
-		Delta:      0.1,
-		EasyAge:    10,
+		Iterations: 3000000,
+		Delta:      0.0003,
+		EasyAge:    56,
 	}
 }

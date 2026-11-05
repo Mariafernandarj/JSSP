@@ -10,7 +10,7 @@ import (
 
 func RandomInitialSchedule(
 	in *problem.Instance,
-	seed int64,
+	rng *rand.Rand,
 ) (*solution.Schedule, error) {
 	if in == nil {
 		return nil, fmt.Errorf("la instancia es nil")
@@ -21,11 +21,7 @@ func RandomInitialSchedule(
 
 	for _, op := range in.Operations {
 		if op.Machine < 0 || op.Machine >= in.NumMachines {
-			return nil, fmt.Errorf(
-				"maquina invalida %d en operacion %d",
-				op.Machine,
-				op.ID,
-			)
+			return nil, fmt.Errorf("maquina invalida")
 		}
 
 		machineOrder[op.Machine] = append(
@@ -35,7 +31,7 @@ func RandomInitialSchedule(
 	}
 
 	// Generador aleatorio.
-	rng := rand.New(rand.NewSource(seed))
+	//rng := rand.New(rand.NewSource(seed))
 
 	// Mezclar las operaciones de cada máquina.
 	for machine := range machineOrder {
