@@ -7,6 +7,7 @@ import (
 	"jssp-oba/internal/problem"
 	"jssp-oba/internal/reporting"
 	"jssp-oba/internal/solution"
+	"jssp-oba/internal/solver"
 	"log"
 	"os"
 	"time"
@@ -23,9 +24,9 @@ func main() {
 }
 
 func run() int {
-	instancePath := "data/instances/example.txt"
+	//instancePath := "data/instances/example.txt"
 	//instancePath := "data/instances/JSSP_50_20.txt"
-	//instancePath := "data/instances/example-100.txt"
+	instancePath := "data/instances/example-100.txt"
 
 	if len(os.Args) > 2 {
 		fmt.Fprintln(os.Stderr, "Uso: go run ./cmd/jssp-oba [archivo_instancia]")
@@ -53,18 +54,13 @@ func run() int {
 	fmt.Printf("Cota inferior:  %d\n", instance.LowerBound)
 	fmt.Printf("Cota superior:  %d\n", instance.UpperBound)
 
-	// se crea una solución inicial
-	sequence := make([]int, 0, instance.TotalOperations())
-
-	for _, job := range instance.Jobs {
-		for _, op := range job.Operations {
-			sequence = append(sequence, op.ID)
-		}
-	}
-
-	initial, err := solution.FromOperationSequence(instance, sequence)
+	// Crear solución inicial aleatoria
+	initial, err := solver.RandomInitialSchedule(
+		instance,
+		time.Now().UnixNano(),
+	)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error al crear la solución inicial: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error al generar solución inicial: %v\n", err)
 		return MINIC_EXIT_INTERNAL
 	}
 
