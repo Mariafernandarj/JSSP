@@ -31,12 +31,24 @@ func Evaluate(
 	denominator := in.UpperBound - in.LowerBound
 	var normalized float64
 
-	if denominator > 0 {
-		normalized = float64(metrics.Makespan-in.LowerBound) / float64(denominator)
-	} else if denominator == 0 && metrics.Makespan > in.LowerBound {
-		// Caso en el que las cotas coinciden
-		normalized = math.Inf(1)
+	/*
+		if metrics.CycleNodes > 0 {
+			normalized = 1.0
+		} else if denominator > 0 {
+			normalized = float64(metrics.Makespan-in.LowerBound) / float64(denominator)
+		} else if metrics.Makespan > in.LowerBound {
+			// Caso en el que las cotas coinciden
+			normalized = math.Inf(1)
 
+		}
+	*/
+	switch {
+	case metrics.CycleNodes > 0:
+		normalized = 1.0 // no usar el makespan parcial
+	case denominator > 0:
+		normalized = float64(metrics.Makespan-in.LowerBound) / float64(denominator)
+	case metrics.Makespan > in.LowerBound:
+		normalized = math.Inf(1)
 	}
 
 	cost := normalized + float64(in.LowerBound)*float64(metrics.CycleNodes)

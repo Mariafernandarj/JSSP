@@ -76,6 +76,8 @@ func Solve(
 			current = neighbor
 			currentEval = neighborEval
 			accepted++
+
+			prevAge = age // edad de ña aceptación anterior
 			age = 0
 
 			if currentEval.Cost < bestEval.Cost {
