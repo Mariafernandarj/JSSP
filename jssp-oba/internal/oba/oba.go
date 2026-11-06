@@ -32,12 +32,18 @@ func Solve(
 	if config.Iterations <= 0 {
 		return nil, fmt.Errorf("Iterations debe ser mayor que cero")
 	}
-	if config.Delta <= 0 {
+	if config.DeltaUnits <= 0 {
 		return nil, fmt.Errorf("Delta debe ser mayor que cero")
 	}
 	if config.EasyAge < 1 {
 		return nil, fmt.Errorf("EasyAge debe ser al menos uno")
 	}
+
+	span := float64(in.UpperBound - in.LowerBound)
+	if span <= 0 {
+		span = 1
+	}
+	delta := config.DeltaUnits / span // Delta normalizado
 
 	current := initial.Clone()
 	currentEval, err := objective.Evaluate(in, current)
@@ -93,11 +99,11 @@ func Solve(
 				count = 1
 			}
 
-			threshold -= float64(count) * config.Delta
+			threshold -= float64(count) * delta
 		} else {
 			//Rechaza el vecino e incrementa la edad
 			age++
-			threshold += config.Delta / float64(config.EasyAge)
+			threshold += delta / float64(config.EasyAge)
 			count = 1
 		}
 
@@ -107,7 +113,7 @@ func Solve(
 	return &Result{
 		BestSchedule:   best,
 		Best:           bestEval,
-		Iterations:     config.Iterations,
+		Iterations:     completed,
 		Accepted:       accepted,
 		FinalThreshold: threshold,
 	}, nil

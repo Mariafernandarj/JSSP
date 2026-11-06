@@ -144,6 +144,7 @@ func EvaluateSchedule(
 	if err != nil {
 		return Metrics{}, err
 	}
-	metrics, _, err := CalculateMakespanRelaxed(g)
-	return metrics, err
+	//metrics, _, err := CalculateMakespanRelaxed(g)
+	//return metrics, err
+	return CalculateMakespan(g)
 }
