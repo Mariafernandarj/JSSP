@@ -54,7 +54,7 @@ func ExportResult(
 		operations[op.ID] = op
 	}
 
-	// ------------------------------------------------
+	// -----------------------------------------------
 	// Solución
 	// ------------------------------------------------
 
@@ -156,6 +156,11 @@ func ExportResult(
 		"Tiempo de ejecucion: %.6f segundos\n",
 		elapsed.Seconds(),
 	)
+
+	fmt.Fprintf(file, "Cota inferior (LB): %d\n", instance.LowerBound)
+	fmt.Fprintf(file, "Cota superior (UB): %d\n", instance.UpperBound)
+	fmt.Fprintf(file, "Brecha respecto a LB: %.2f%%\n",
+		100*float64(result.Best.Makespan-instance.LowerBound)/float64(instance.LowerBound))
 
 	// Escribir el contenido en el archivo.
 	if _, err := file.WriteString(builder.String()); err != nil {

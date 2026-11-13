@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"log"
-
+	"fmt"
 	"jssp-oba/internal/oba"
 	"jssp-oba/internal/problem"
 	"jssp-oba/internal/solver"
+	"log"
 )
 
 func main() {
@@ -40,6 +40,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Printf("Cota inferior (LB): %d\n", instance.LowerBound)
+	fmt.Printf("Cota superior (UB): %d\n", instance.UpperBound)
 
 	// Leer configuración
 	config, err := oba.LoadConfig(*configPath)
