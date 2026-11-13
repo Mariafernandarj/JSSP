@@ -1,6 +1,6 @@
 # Semillas para las corridas independientes
-10
+#10
 20
 30
-40
-50
+#40
+#50

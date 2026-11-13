@@ -1,5 +1,5 @@
 {
-    "iterations": 5000000,
+    "iterations": 100,
     "delta": 5,
     "easy_age": 56
 }

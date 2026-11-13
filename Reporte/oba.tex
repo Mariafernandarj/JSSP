@@ -1,0 +1,794 @@
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% Paquetes
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+
+% =====================================================
+% Configuración de página y estilo
+% =====================================================
+\geometry{top=2.5cm,bottom=2.5cm,left=3cm,right=3cm}
+\onehalfspacing
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0.35em}
+
+\definecolor{azul}{RGB}{31,78,121}
+\definecolor{grisclaro}{RGB}{245,247,250}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azul,
+    citecolor=azul,
+    urlcolor=azul,
+    pdftitle={Recocido Simulado para la resolución del problema del agente viajero},
+    pdfauthor={Ramírez Juárez María Fernanda}
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{grisclaro},
+    frame=single,
+    rulecolor=\color{black!15},
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    breaklines=true,
+    tabsize=2
+}
+
+\setlist[description]{style=nextline,leftmargin=0pt,labelindent=0pt,itemsep=0.6em}
+
+% =====================================================
+% Información del documento
+% =====================================================
+\title{\textbf{La heurística Old Bachelor Acceptance (OBA) para la resolución de Job Shop Scheduling Problem }}
+\author{Ramírez Juárez María Fernanda}
+\date{\today}
+
+% =====================================================
+% Documento
+% =====================================================
+\begin{document}
+
+\maketitle
+
+% =====================================================
+% 1. INTRODUCCIÓN
+% =====================================================
+\section{Introducción}
+\label{sec:introduccion}
+
+El problema de programación de trabajos en máquinas, conocido como
+\textit{Job-Shop Scheduling Problem} (JSSP), es un problema clásico
+de optimización combinatoria que consiste en determinar el orden
+en que un conjunto de trabajos debe ser procesado por diferentes
+máquinas. Cada trabajo está compuesto por una secuencia
+predeterminada de operaciones, donde cada operación requiere una
+máquina específica y un tiempo de procesamiento determinado.
+El objetivo principal es encontrar una programación que permita
+completar todos los trabajos en el menor tiempo posible, respetando
+las restricciones de precedencia entre operaciones y la disponibilidad
+de los recursos.
+
+El JSSP presenta una dificultad considerable debido a la gran
+cantidad de posibles combinaciones en las que pueden organizarse
+las operaciones. Conforme aumenta el número de trabajos, máquinas
+y operaciones, el espacio de búsqueda crece significativamente,
+haciendo que encontrar soluciones óptimas resulte computacionalmente
+costoso. Por esta razón, las heurísticas de optimización
+combinatoria representan una alternativa para obtener soluciones
+de buena calidad en tiempos de ejecución razonables.
+
+En este proyecto se propone utilizar la heurística
+\textit{Old Bachelor Acceptance} (OBA), específicamente su variante
+OBA2-N, para abordar el problema JSSP. OBA es un método de búsqueda
+local basado en aceptación por umbrales (\textit{Threshold
+Accepting}), propuesto por Huy, Kahng y Tsao. Su principal
+característica es el uso de un umbral dinámico y no monótono que
+permite controlar la aceptación de soluciones que pueden representar
+un empeoramiento respecto a la solución actual. De esta manera,
+el algoritmo busca evitar quedar atrapado en óptimos locales y
+mantener la exploración del espacio de soluciones.
+
+La variante OBA2 utiliza una estrategia que combina movimientos
+de descenso pronunciado con incrementos moderados del umbral.
+Esto permite intensificar la búsqueda cuando se encuentran
+soluciones favorables y relajar gradualmente el criterio de
+aceptación cuando se presentan dificultades para encontrar nuevos
+movimientos aceptables. Por su parte, OBA2-N introduce una
+modificación en el criterio de aceptación: los valores negativos
+del umbral se consideran como cero al evaluar si una nueva
+solución puede ser aceptada. Esta modificación permite estudiar
+el comportamiento de la búsqueda sin utilizar umbrales negativos
+para aceptar movimientos.
+
+Finalmente, el propósito de este proyecto es implementar y evaluar
+la heurística OBA2-N como método de búsqueda para resolver
+instancias del problema JSSP, utilizando como criterio de
+optimización la minimización del tiempo total de finalización
+de los trabajos, conocido como \textit{makespan}. A partir de
+los resultados obtenidos, se busca analizar el comportamiento
+de la heurística y su capacidad para encontrar programaciones
+de buena calidad.
+
+% =====================================================
+% 2. DESARROLLO
+% =====================================================
+\section{Desarrollo}
+
+Para resolver el problema de calendarización de trabajos en máquinas
+(Job-Shop Scheduling Problem, JSSP), se desarrolló una aplicación en
+el lenguaje de programación Go que utiliza la heurística
+\textit{Old Bachelor Acceptance}, específicamente su variante
+OBA2-N. El desarrollo se organizó mediante módulos independientes,
+con el propósito de separar la definición del problema, la
+representación de las soluciones, su evaluación y el proceso de
+búsqueda.
+
+El procedimiento general consiste en leer una instancia del JSSP,
+construir una solución inicial, evaluar su calidad y explorar
+soluciones vecinas mediante movimientos sobre el orden de
+procesamiento de las operaciones. La heurística OBA2-N determina
+si cada solución candidata es aceptada, utilizando un umbral
+dinámico. Finalmente, se registran las mejores soluciones y las
+métricas obtenidas durante las ejecuciones.
+
+\subsection{Modelado del problema}
+
+El primer paso consistió en representar formalmente las instancias
+del JSSP. Una instancia está compuesta por un conjunto de trabajos,
+donde cada trabajo contiene una secuencia ordenada de operaciones.
+Cada operación requiere una máquina específica y posee un tiempo
+de procesamiento determinado.
+
+Para representar esta información se definieron tres estructuras
+principales:
+
+\begin{itemize}
+    \item \textbf{Instance:} almacena las dimensiones del problema,
+    el conjunto de trabajos, las operaciones y las cotas inferior
+    y superior.
+
+    \item \textbf{Job:} representa un trabajo y contiene su
+    identificador y la secuencia ordenada de operaciones que
+    deben ejecutarse.
+
+    \item \textbf{Operation:} representa una operación mediante
+    su identificador, el trabajo al que pertenece, su posición
+    dentro del trabajo, la máquina requerida y su duración.
+\end{itemize}
+
+Esta representación permite identificar las operaciones y
+consultar sus características durante la construcción y evaluación
+de los calendarios.
+
+\subsubsection{Lectura y validación de instancias}
+
+Se desarrolló un mecanismo para leer las instancias desde archivos
+de texto. El formato de entrada utilizado comienza con dos valores
+enteros que indican el número de trabajos y el número de máquinas.
+Posteriormente, se especifican los pares máquina-duración
+correspondientes a cada operación.
+
+De esta manera, cada par representa la máquina que debe procesar
+una operación y el tiempo necesario para completarla. El parser
+interpreta estos datos y construye las estructuras de trabajos y
+operaciones utilizadas por el resto del programa.
+
+Después de la lectura se realiza una validación de la instancia,
+comprobando aspectos como:
+
+\begin{itemize}
+    \item Que las dimensiones de la instancia sean válidas.
+    \item Que las operaciones tengan identificadores consistentes.
+    \item Que las máquinas especificadas pertenezcan al rango
+    permitido.
+    \item Que las duraciones de procesamiento sean positivas.
+    \item Que la cantidad de operaciones corresponda con las
+    dimensiones de la instancia.
+\end{itemize}
+
+Esta etapa permite detectar entradas incorrectas antes de iniciar
+el proceso de búsqueda.
+
+\subsubsection{Cálculo de cotas}
+
+Para evaluar las soluciones se establecieron una cota inferior
+(\textit{Lower Bound}, LB) y una cota superior
+(\textit{Upper Bound}, UB).
+
+La cota superior se obtiene sumando las duraciones de todas las
+operaciones de la instancia:
+
+\[
+UB = \sum_{i=1}^{n}\sum_{j=1}^{m} t(O_{ij})
+\]
+
+donde $t(O_{ij})$ representa la duración de la operación $j$
+del trabajo $i$.
+
+Por otra parte, la cota inferior se calcula considerando dos
+restricciones del problema: la carga de trabajo de cada trabajo
+y la carga de procesamiento de cada máquina. Por lo tanto:
+
+\[
+LB = \max(LB_{\text{trabajos}},
+          LB_{\text{máquinas}})
+\]
+
+La primera corresponde a la mayor suma de duraciones entre
+todos los trabajos, mientras que la segunda representa la mayor
+suma de duraciones entre todas las máquinas.
+
+Estas cotas se utilizan posteriormente para normalizar el valor
+de la función objetivo.
+
+\subsection{Representación de las soluciones}
+
+Una vez definido el modelo del problema, se estableció una
+representación para los calendarios de procesamiento. Se utilizó
+una estructura denominada \texttt{Schedule}, basada en una lista
+de operaciones para cada máquina.
+
+La estructura \texttt{MachineOrder} almacena los identificadores
+de las operaciones en el orden en que serán procesadas por cada
+máquina. Por consiguiente, cada posición de la estructura
+corresponde a una máquina y contiene la secuencia de operaciones
+asignadas a ella.
+
+Esta representación permite modificar el orden de procesamiento
+de las operaciones sin alterar la máquina a la que pertenece
+cada una.
+
+Es importante señalar que agrupar las operaciones por máquina
+no garantiza por sí mismo que el calendario sea factible. También
+deben respetarse las restricciones de precedencia entre las
+operaciones de un mismo trabajo. Por esta razón, la factibilidad
+se verifica durante la evaluación de cada solución.
+
+\subsection{Evaluación de soluciones}
+
+La evaluación de una solución es una etapa fundamental, ya que
+permite determinar su calidad y comprobar si cumple las
+restricciones del JSSP.
+
+Para realizar esta evaluación se construye un grafo dirigido
+que representa las relaciones de precedencia entre las
+operaciones. Se consideran dos tipos de restricciones:
+
+\begin{itemize}
+    \item \textbf{Precedencia entre operaciones de un trabajo:}
+    las operaciones deben ejecutarse respetando el orden
+    establecido en cada trabajo.
+
+    \item \textbf{Orden de procesamiento de una máquina:}
+    las operaciones asignadas a una misma máquina deben
+    procesarse siguiendo el orden definido en el calendario.
+\end{itemize}
+
+Cada operación se representa mediante un vértice del grafo,
+mientras que las restricciones de precedencia se representan
+mediante aristas dirigidas.
+
+\subsubsection{Detección de ciclos y factibilidad}
+
+Para comprobar si un calendario es factible se utiliza el
+ordenamiento topológico mediante el algoritmo de Kahn.
+
+Este procedimiento permite procesar los vértices del grafo
+respetando sus dependencias. Si se consigue procesar la totalidad
+de las operaciones, significa que el grafo es acíclico y que
+el calendario satisface las restricciones de precedencia
+modeladas.
+
+En cambio, si quedan vértices sin procesar, se detecta la
+existencia de ciclos o dependencias que impiden completar
+el ordenamiento topológico. En este caso, la solución se
+considera infactible.
+
+\subsubsection{Cálculo del makespan}
+
+Cuando el grafo es acíclico, se calculan los tiempos de inicio
+y finalización de las operaciones respetando las dependencias
+establecidas.
+
+El objetivo principal del JSSP es minimizar el tiempo total
+necesario para completar todos los trabajos, conocido como
+\textit{makespan}. Este valor corresponde al mayor tiempo
+de finalización entre todas las operaciones:
+
+\[
+C_{\max} = \max_{i,j} C_{ij}
+\]
+
+donde $C_{ij}$ representa el tiempo de finalización de la
+operación $j$ del trabajo $i$.
+
+Por lo tanto, una solución con un menor valor de
+$C_{\max}$ representa un calendario de procesamiento más
+eficiente, siempre que sea factible.
+
+\subsubsection{Función objetivo}
+
+Para evaluar tanto la calidad como la factibilidad de las
+soluciones se utiliza una función de costo que combina el
+makespan normalizado con una penalización por ciclos:
+
+\[
+f(X) =
+\frac{C_{\max}(X)-LB}{UB-LB}
++
+LB \cdot V(X)
+\]
+
+donde:
+
+\begin{itemize}
+    \item $X$ representa el calendario evaluado.
+    \item $C_{\max}(X)$ es el makespan de la solución.
+    \item $LB$ y $UB$ representan las cotas inferior y superior.
+    \item $V(X)$ representa la cantidad de vértices que quedaron
+    sin procesar durante la evaluación topológica.
+\end{itemize}
+
+El primer término permite normalizar el makespan con respecto
+a las cotas calculadas para la instancia. El segundo término
+penaliza las soluciones que presentan ciclos.
+
+De esta manera, las soluciones factibles se evalúan mediante
+su makespan normalizado, mientras que las soluciones
+infactibles reciben una penalización que incrementa su costo.
+
+\subsection{Generación de soluciones vecinas}
+
+Para explorar diferentes calendarios se implementó un mecanismo
+de generación de soluciones vecinas. La vecindad se basa en
+intercambiar operaciones adyacentes dentro de la secuencia
+correspondiente a una máquina.
+
+Si una máquina contiene una secuencia de operaciones como:
+
+\[
+M_k = [O_1,O_2,O_3,O_4]
+\]
+
+un movimiento puede intercambiar dos operaciones consecutivas,
+obteniendo, por ejemplo:
+
+\[
+M_k' = [O_1,O_3,O_2,O_4]
+\]
+
+Este movimiento modifica el orden de procesamiento de las
+operaciones sin cambiar su asignación a las máquinas.
+
+Cada movimiento se aplica sobre una copia del calendario
+original, de manera que la solución actual no sea modificada
+accidentalmente durante la generación de candidatos.
+
+Después de realizar el intercambio, la nueva solución se
+evalúa mediante el grafo de restricciones. Esto es necesario
+porque un cambio en el orden de una máquina puede introducir
+ciclos al combinarse con las precedencias de los trabajos.
+
+La selección aleatoria de movimientos permite explorar
+diferentes regiones del espacio de búsqueda.
+
+\subsection{Implementación de la heurística OBA2-N}
+
+Una vez definidos los mecanismos de representación, evaluación
+y generación de vecinos, se integró la heurística
+\textit{Old Bachelor Acceptance}, en su variante OBA2-N.
+
+El algoritmo mantiene una solución actual, denominada
+metafóricamente el ``soltero'', y utiliza un umbral dinámico
+para decidir si acepta una solución candidata.
+
+Sea $X$ la solución actual y $X'$ una solución vecina.
+El criterio de aceptación por umbral se expresa como:
+
+\[
+f(X') < f(X) + T
+\]
+
+donde $T$ representa el umbral de aceptación.
+
+Este criterio permite aceptar soluciones que no necesariamente
+mejoran el costo de la solución actual, siempre que se
+encuentren dentro del límite establecido por el umbral.
+Por lo tanto, la búsqueda no se restringe únicamente a
+movimientos de mejora.
+
+\subsubsection{Actualización del umbral}
+
+La variante OBA2 utiliza un mecanismo de actualización
+dinámica del umbral. Su comportamiento se caracteriza por
+un descenso pronunciado y un incremento moderado, lo que
+permite modificar el nivel de exigencia durante el proceso
+de búsqueda.
+
+El tamaño del decremento aumenta de manera cuadrática,
+mientras que el incremento sigue un comportamiento lineal.
+Además, se considera la cantidad de aceptaciones fáciles,
+relacionadas con el tiempo transcurrido desde la última
+aceptación.
+
+La variante OBA2-N incorpora una modificación específica
+en el criterio de aceptación: cuando el umbral toma valores
+negativos, estos se consideran como cero para aplicar la
+regla de aceptación.
+
+Esto permite establecer un límite al efecto de los umbrales
+negativos durante la decisión de aceptar una solución
+candidata. Es importante distinguir que esta modificación
+se aplica al criterio de aceptación y no significa que
+el valor almacenado del umbral deba eliminarse o modificarse
+automáticamente.
+
+\subsubsection{Proceso de búsqueda}
+
+El procedimiento general de búsqueda de OBA2-N se organiza
+en las siguientes etapas:
+
+\begin{enumerate}
+    \item Se recibe una solución inicial y se evalúa su costo.
+    \item Se genera una solución vecina mediante un movimiento
+    sobre el orden de operaciones de una máquina.
+    \item Se evalúa la solución candidata, calculando su
+    makespan cuando es factible y su penalización cuando
+    presenta ciclos.
+    \item Se aplica el criterio de aceptación de OBA2-N,
+    utilizando el umbral correspondiente.
+    \item Si la solución candidata es aceptada, se convierte
+    en la nueva solución actual.
+    \item Se actualiza el umbral de acuerdo con las reglas
+    de la heurística.
+    \item Se conserva la mejor solución encontrada durante
+    el proceso.
+    \item El procedimiento continúa hasta alcanzar el número
+    de iteraciones establecido.
+\end{enumerate}
+
+Durante la búsqueda resulta conveniente distinguir entre
+la solución actual, la mejor solución observada y la mejor
+solución factible. Esta separación permite conservar el
+mejor calendario válido encontrado, incluso cuando la
+solución actual o la mejor solución global no sean
+factibles.
+
+\subsection{Inicialización de soluciones}
+
+Antes de ejecutar la heurística es necesario construir un
+calendario inicial. Para ello, se consideran las operaciones
+de la instancia y se agrupan de acuerdo con las máquinas
+que deben procesarlas.
+
+La inicialización aleatoria permite generar diferentes
+órdenes de procesamiento para las máquinas. Sin embargo,
+mezclar independientemente todas las secuencias puede
+producir calendarios con ciclos, debido a que no se
+garantiza que las precedencias de los trabajos sean
+respetadas.
+
+Por esta razón, la solución inicial debe someterse al
+mismo procedimiento de evaluación utilizado durante
+la búsqueda, con el propósito de identificar si es
+factible y calcular su costo.
+
+La utilización de distintas semillas permite obtener
+diferentes soluciones iniciales y explorar distintas
+trayectorias de búsqueda.
+
+\subsection{Experimentación y registro de resultados}
+
+Para analizar el comportamiento de la heurística se
+considera la ejecución de múltiples corridas independientes
+sobre una misma instancia. Cada corrida utiliza una
+semilla diferente para controlar las decisiones aleatorias
+del algoritmo.
+
+La utilización de un generador aleatorio local por corrida
+permite reproducir los experimentos cuando se mantienen
+constantes la instancia, la configuración y la semilla.
+
+Durante cada ejecución se recopilan métricas que permiten
+analizar el comportamiento de OBA2-N, entre ellas:
+
+\begin{itemize}
+    \item Makespan de la mejor solución factible encontrada.
+    \item Costo de la solución.
+    \item Número de iteraciones ejecutadas.
+    \item Cantidad de movimientos aceptados.
+    \item Valor final del umbral.
+    \item Tiempo de ejecución.
+    \item Semilla utilizada.
+    \item Indicador de factibilidad de la solución.
+\end{itemize}
+
+Los resultados de cada corrida se almacenan en archivos
+de texto independientes. Cada archivo contiene la
+representación del calendario y la información relacionada
+con la ejecución.
+
+Adicionalmente, se contempla la generación de un resumen
+global que permita comparar los resultados obtenidos
+con las diferentes semillas. Entre las medidas de interés
+se encuentran el mejor, peor y promedio del makespan
+de las corridas factibles, así como el porcentaje de
+ejecuciones que lograron encontrar una solución factible.
+
+\subsection{Flujo general del programa}
+
+La ejecución completa del proyecto sigue una secuencia
+de etapas que integra los módulos descritos anteriormente:
+
+\begin{enumerate}
+    \item \textbf{Lectura de la instancia:} se recibe el archivo
+    de entrada y se construyen los trabajos y operaciones.
+
+    \item \textbf{Validación:} se comprueba la consistencia
+    de los datos y se calculan las cotas inferior y superior.
+
+    \item \textbf{Configuración:} se establecen los parámetros
+    necesarios para ejecutar OBA2-N.
+
+    \item \textbf{Inicialización:} se genera un calendario
+    inicial y se evalúa su factibilidad.
+
+    \item \textbf{Generación de vecinos:} se selecciona una
+    máquina y se realiza un movimiento sobre su secuencia
+    de operaciones.
+
+    \item \textbf{Evaluación y aceptación:} se calcula el
+    costo de la solución candidata y se aplica el criterio
+    de aceptación de OBA2-N.
+
+    \item \textbf{Actualización:} se actualiza el umbral y
+    se registran las mejores soluciones encontradas.
+
+    \item \textbf{Finalización:} al alcanzar el límite de
+    iteraciones, se guardan las métricas y el resultado
+    de la corrida.
+
+    \item \textbf{Experimentación:} se repite el procedimiento
+    utilizando diferentes semillas para comparar los
+    resultados.
+\end{enumerate}
+
+La separación de estas etapas permite mantener independiente
+la lógica del problema respecto de la heurística de
+optimización, facilitando la revisión, prueba y modificación
+de los componentes del proyecto.
+
+\subsection{Estructura del proyecto}
+\label{sec:estructura}
+
+El proyecto se organizó mediante una estructura modular utilizando
+. Esta organización permite separar las responsabilidades relacionadas
+con la definición del problema, la representación de soluciones,
+la evaluación de calendarios y la ejecución de la heurística OBA2-N.
+
+Como se muestra en la Figura~\ref{fig:arbol}, el proyecto se divide
+principalmente en los directorios \texttt{cmd}, \texttt{data},
+\texttt{gantt} e \texttt{internal}. Cada uno contiene los archivos
+necesarios para realizar una tarea específica dentro del proceso
+de resolución del JSSP.
+
+\begin{itemize}
+
+    \item \textbf{cmd:} contiene el punto de entrada de la aplicación.
+    Dentro de \texttt{jssp-oba} se encuentra el archivo
+    \texttt{main.go}, encargado de coordinar la ejecución del
+    programa, recibir los parámetros necesarios y conectar los
+    diferentes módulos del proyecto.
+
+    \item \textbf{data:} almacena los archivos utilizados y
+    generados durante los experimentos. Se divide en cuatro
+    directorios:
+    \begin{itemize}
+        \item \texttt{configs}: contiene los archivos JSON con
+        los parámetros de configuración para las diferentes
+        instancias y ejecuciones del algoritmo.
+
+        \item \texttt{instances}: almacena las instancias del
+        problema JSSP que serán utilizadas como entrada del
+        programa.
+
+        \item \texttt{seeds}: contiene el archivo con las semillas
+        utilizadas para controlar las decisiones aleatorias y
+        permitir la repetición de los experimentos.
+
+        \item \texttt{results}: almacena los archivos de salida
+        generados durante las ejecuciones, incluyendo la
+        información de las soluciones y las métricas obtenidas.
+    \end{itemize}
+
+    \item \textbf{gantt:} contiene los recursos relacionados
+    con la generación de diagramas de Gantt. El archivo
+    \texttt{gantt.py} permite procesar la información de una
+    solución y generar una representación gráfica del
+    calendario de operaciones.
+
+    \item \textbf{internal:} contiene la implementación de los
+    módulos principales del proyecto. En este directorio se
+    concentra la lógica necesaria para modelar el problema,
+    generar soluciones, evaluarlas y ejecutar la heurística
+    de optimización. Se divide en los siguientes paquetes:
+
+    \begin{itemize}
+
+        \item \texttt{oba}: implementa la heurística
+        \textit{Old Bachelor Acceptance}, variante OBA2-N.
+        El archivo \texttt{config.go} contiene los parámetros
+        necesarios para configurar el algoritmo, mientras que
+        \texttt{oba.go} contiene la lógica del proceso de
+        búsqueda y el criterio de aceptación de soluciones.
+
+        \item \texttt{neighborhood}: se encarga de generar
+        soluciones vecinas a partir de un calendario existente.
+        El archivo \texttt{generate.go} gestiona la generación
+        de candidatos y \texttt{moves.go} contiene los
+        movimientos que modifican el orden de las operaciones
+        dentro de las máquinas.
+
+        \item \texttt{objective}: contiene los procedimientos
+        utilizados para evaluar las soluciones. 
+        \texttt{cycles.go} construye el grafo de precedencias
+        y permite identificar ciclos; \texttt{makespan.go}
+        calcula el tiempo total de finalización de los trabajos,
+        y \texttt{evaluate.go} integra estas operaciones para
+        obtener el valor de la función objetivo.
+
+        \item \texttt{problem}: define las estructuras de datos
+        utilizadas para representar una instancia del JSSP.
+        \texttt{instance.go} y \texttt{operation.go} contienen
+        las estructuras correspondientes a los trabajos y
+        operaciones. Por su parte, \texttt{parser.go} permite
+        leer las instancias desde archivos, \texttt{validate.go}
+        verifica la consistencia de los datos y
+        \texttt{bounds.go} calcula las cotas inferior y superior
+        del problema.
+
+        \item \texttt{reporting}: contiene los procedimientos
+        para almacenar los resultados de las ejecuciones.
+        El archivo \texttt{export.go} se encarga de generar
+        los archivos de salida con la información de las
+        soluciones y sus métricas.
+
+        \item \texttt{solution}: define la representación
+        de los calendarios utilizados durante la búsqueda.
+        \texttt{schedule.go} contiene la estructura principal
+        de una solución, \texttt{representation.go} proporciona
+        las operaciones relacionadas con su representación
+        y \texttt{clone.go} permite crear copias independientes
+        de los calendarios antes de aplicar modificaciones.
+
+        \item \texttt{solver}: coordina la preparación y
+        ejecución de los experimentos. 
+        \texttt{initialize.go} construye la solución inicial,
+        \texttt{seeds.go} gestiona las semillas utilizadas
+        para las ejecuciones aleatorias y
+        \texttt{experiment.go} permite organizar las corridas
+        experimentales.
+
+    \end{itemize}
+
+    \item \textbf{go.mod:} define el módulo de Go y administra
+    la información necesaria para compilar y organizar las
+    dependencias del proyecto.
+
+    \item \textbf{README.md:} contiene la documentación general
+    del proyecto, incluyendo información sobre su propósito,
+    configuración y ejecución.
+
+\end{itemize}
+
+Esta organización facilita el mantenimiento del código,
+la realización de pruebas individuales y la posibilidad de
+modificar algún componente del algoritmo sin afectar
+directamente al resto de la implementación.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.92\textwidth}
+\begin{lstlisting}
+.
+|-- cmd
+|   |-- jssp-oba
+|       |-- main.go
+|-- data
+|   |-- configs
+|   |   |-- config100x100.json
+|   |   |-- config50x20.json
+|   |-- instances
+|   |   |-- config100x100.json
+|   |   |-- config40x40.json
+|   |   |-- config50x20.json
+|   |-- seeds
+|   |   |-- seeds.txt
+|   |-- results
+|       |-- resultado_20261106_133135.368687566.txt
+|-- gantt
+|   |-- gantt.png
+|   |-- gantt.py
+|-- go.mod
+|-- internal
+|   |-- oba
+|   |   |-- config.go
+|   |   |-- oba.go
+|   |   |-- oba.go
+|   |-- neighborhood
+|   |   |-- generate.go
+|   |   |-- moves.go
+|   |-- objective
+|   |   |-- cycles.go
+|   |   |-- evaluate.go
+|   |   |-- makespan.go
+|   |-- problem
+|   |   |-- bounds.go
+|   |   |-- instance.go
+|   |   |-- operation.go
+|   |   |-- parser.go
+|   |   |-- validate.go
+|   |-- reporting
+|   |   |-- export.go
+|   |-- solution
+|   |   |-- clone.go
+|   |   |-- representation.go
+|   |   |-- schedule.go
+|   |-- solver
+|   |   |-- experiment.go
+|   |   |-- initialize.g
+|   |   |-- seeds.go
+|-- README.md
+\end{lstlisting}
+    \end{minipage}
+    \caption{Estructura de directorios del proyecto.}
+    \label{fig:arbol}
+\end{figure}
+
+
+\section{Resultados}
+
+
+% =====================================================
+% 3. CONCLUSIÓN
+% =====================================================
+\section{Conclusión}
+
+
+% =====================================================
+% 4. REFERENCIAS
+% =====================================================
+\begin{thebibliography}{99}
+
+\bibitem{OBA}
+Huy, T. C., Kahng, A. B. y Tsao, C. W. Old Bachelor Acceptance: A New Class of Non-Monotone Threshold Accepting Methods.
+
+\bibitem{JSSP}
+Aguilar, D. J. V. (2026). JSSP - Desarrollo del Problema. Documento de especificación del problema.
+
+\end{thebibliography}
+
+\end{document}
