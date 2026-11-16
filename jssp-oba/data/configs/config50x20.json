@@ -1,5 +1,6 @@
 {
-    "iterations": 100,
+    "iterations": 1000000,
     "delta": 5,
-    "easy_age": 56
+    "easy_age": 56,
+    "history_points": 100
 }

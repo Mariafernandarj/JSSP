@@ -79,125 +79,50 @@
 \section{Introducción}
 \label{sec:introduccion}
 
-El problema de programación de trabajos en máquinas, conocido como
-\textit{Job-Shop Scheduling Problem} (JSSP), es un problema clásico
-de optimización combinatoria que consiste en determinar el orden
-en que un conjunto de trabajos debe ser procesado por diferentes
-máquinas. Cada trabajo está compuesto por una secuencia
-predeterminada de operaciones, donde cada operación requiere una
-máquina específica y un tiempo de procesamiento determinado.
-El objetivo principal es encontrar una programación que permita
-completar todos los trabajos en el menor tiempo posible, respetando
-las restricciones de precedencia entre operaciones y la disponibilidad
-de los recursos.
+El problema de programación de trabajos en máquinas, conocido como \textit{Job-Shop Scheduling Problem} (JSSP), es un problema clásico de optimización combinatoria que consiste en determinar el orden en que un conjunto de trabajos debe ser procesado por diferentes máquinas. Cada trabajo está compuesto por una secuencia predeterminada de operaciones, donde cada operación requiere una máquina específica y un tiempo de procesamiento determinado. El objetivo principal es encontrar una programación que permita completar todos los trabajos en el menor tiempo posible, respetando
+las restricciones de precedencia entre operaciones y la disponibilidad de los recursos.
 
-El JSSP presenta una dificultad considerable debido a la gran
-cantidad de posibles combinaciones en las que pueden organizarse
-las operaciones. Conforme aumenta el número de trabajos, máquinas
-y operaciones, el espacio de búsqueda crece significativamente,
-haciendo que encontrar soluciones óptimas resulte computacionalmente
-costoso. Por esta razón, las heurísticas de optimización
-combinatoria representan una alternativa para obtener soluciones
-de buena calidad en tiempos de ejecución razonables.
+El JSSP presenta una dificultad considerable debido a la gran cantidad de posibles combinaciones en las que pueden organizarse las operaciones. Conforme aumenta el número de trabajos, máquinas y operaciones, el espacio de búsqueda crece significativamente, haciendo que encontrar soluciones óptimas resulte computacionalmente costoso. Por esta razón, las heurísticas de optimización combinatoria representan una alternativa para obtener soluciones de buena calidad en tiempos de ejecución razonables.
 
-En este proyecto se propone utilizar la heurística
-\textit{Old Bachelor Acceptance} (OBA), específicamente su variante
-OBA2-N, para abordar el problema JSSP. OBA es un método de búsqueda
-local basado en aceptación por umbrales (\textit{Threshold
-Accepting}), propuesto por Huy, Kahng y Tsao. Su principal
-característica es el uso de un umbral dinámico y no monótono que
-permite controlar la aceptación de soluciones que pueden representar
-un empeoramiento respecto a la solución actual. De esta manera,
-el algoritmo busca evitar quedar atrapado en óptimos locales y
-mantener la exploración del espacio de soluciones.
+En este proyecto se propone utilizar la heurística \textit{Old Bachelor Acceptance} (OBA), específicamente su variante OBA2-N, para abordar el problema JSSP. OBA es un método de búsqueda local basado en aceptación por umbrales (\textit{Threshold Accepting}), propuesto por Huy, Kahng y Tsao. Su principal característica es el uso de un umbral dinámico y no monótono que permite controlar la aceptación de soluciones que pueden representar un empeoramiento respecto a la solución actual. De esta manera, el algoritmo busca evitar quedar atrapado en óptimos locales y mantener la exploración del espacio de soluciones.
 
-La variante OBA2 utiliza una estrategia que combina movimientos
-de descenso pronunciado con incrementos moderados del umbral.
-Esto permite intensificar la búsqueda cuando se encuentran
-soluciones favorables y relajar gradualmente el criterio de
-aceptación cuando se presentan dificultades para encontrar nuevos
-movimientos aceptables. Por su parte, OBA2-N introduce una
-modificación en el criterio de aceptación: los valores negativos
-del umbral se consideran como cero al evaluar si una nueva
-solución puede ser aceptada. Esta modificación permite estudiar
-el comportamiento de la búsqueda sin utilizar umbrales negativos
-para aceptar movimientos.
+La variante OBA2 utiliza una estrategia que combina movimientos de descenso pronunciado con incrementos moderados del umbral. Esto permite intensificar la búsqueda cuando se encuentran soluciones favorables y relajar gradualmente el criterio de aceptación cuando se presentan dificultades para encontrar nuevos movimientos aceptables. Por su parte, OBA2-N introduce una modificación en el criterio de aceptación: los valores negativos
+del umbral se consideran como cero al evaluar si una nueva solución puede ser aceptada. Esta modificación permite estudiar el comportamiento de la búsqueda sin utilizar umbrales negativos para aceptar movimientos.
 
-Finalmente, el propósito de este proyecto es implementar y evaluar
-la heurística OBA2-N como método de búsqueda para resolver
-instancias del problema JSSP, utilizando como criterio de
-optimización la minimización del tiempo total de finalización
-de los trabajos, conocido como \textit{makespan}. A partir de
-los resultados obtenidos, se busca analizar el comportamiento
-de la heurística y su capacidad para encontrar programaciones
-de buena calidad.
+Finalmente, el propósito de este proyecto es implementar y evaluar la heurística OBA2-N como método de búsqueda para resolver instancias del problema JSSP, utilizando como criterio de optimización la minimización del tiempo total de finalización de los trabajos, conocido como \textit{makespan}. A partir de los resultados obtenidos, se busca analizar el comportamiento de la heurística y su capacidad para encontrar programaciones de buena calidad.
 
 % =====================================================
 % 2. DESARROLLO
 % =====================================================
 \section{Desarrollo}
 
-Para resolver el problema de calendarización de trabajos en máquinas
-(Job-Shop Scheduling Problem, JSSP), se desarrolló una aplicación en
-el lenguaje de programación Go que utiliza la heurística
-\textit{Old Bachelor Acceptance}, específicamente su variante
-OBA2-N. El desarrollo se organizó mediante módulos independientes,
-con el propósito de separar la definición del problema, la
-representación de las soluciones, su evaluación y el proceso de
-búsqueda.
+Para resolver el problema de calendarización de trabajos en máquinas (Job-Shop Scheduling Problem, JSSP), se desarrolló una aplicación en el lenguaje de programación Go que utiliza la heurística \textit{Old Bachelor Acceptance}, específicamente su variante OBA2-N. El desarrollo se organizó mediante módulos independientes, con el propósito de separar la definición del problema, la representación de las soluciones, su evaluación y el proceso de búsqueda.
 
-El procedimiento general consiste en leer una instancia del JSSP,
-construir una solución inicial, evaluar su calidad y explorar
-soluciones vecinas mediante movimientos sobre el orden de
-procesamiento de las operaciones. La heurística OBA2-N determina
-si cada solución candidata es aceptada, utilizando un umbral
-dinámico. Finalmente, se registran las mejores soluciones y las
-métricas obtenidas durante las ejecuciones.
+El procedimiento general consiste en leer una instancia del JSSP, construir una solución inicial, evaluar su calidad y explorar soluciones vecinas mediante movimientos sobre el orden de procesamiento de las operaciones. La heurística OBA2-N determina si cada solución candidata es aceptada, utilizando un umbral dinámico. Finalmente, se registran las mejores soluciones y las métricas obtenidas durante las ejecuciones.
 
 \subsection{Modelado del problema}
 
-El primer paso consistió en representar formalmente las instancias
-del JSSP. Una instancia está compuesta por un conjunto de trabajos,
-donde cada trabajo contiene una secuencia ordenada de operaciones.
-Cada operación requiere una máquina específica y posee un tiempo
-de procesamiento determinado.
+El primer paso consistió en representar formalmente las instancias del JSSP. Una instancia está compuesta por un conjunto de trabajos, donde cada trabajo contiene una secuencia ordenada de operaciones. Cada operación requiere una máquina específica y posee un tiempo de procesamiento determinado.
 
-Para representar esta información se definieron tres estructuras
-principales:
+Para representar esta información se definieron tres estructuras principales:
 
 \begin{itemize}
-    \item \textbf{Instance:} almacena las dimensiones del problema,
-    el conjunto de trabajos, las operaciones y las cotas inferior
-    y superior.
+    \item \textbf{Instance:} almacena las dimensiones del problema, el conjunto de trabajos, las operaciones y las cotas inferior y superior.
 
-    \item \textbf{Job:} representa un trabajo y contiene su
-    identificador y la secuencia ordenada de operaciones que
-    deben ejecutarse.
+    \item \textbf{Job:} representa un trabajo y contiene su identificador y la secuencia ordenada de operaciones que deben ejecutarse.
 
-    \item \textbf{Operation:} representa una operación mediante
-    su identificador, el trabajo al que pertenece, su posición
-    dentro del trabajo, la máquina requerida y su duración.
+    \item \textbf{Operation:} representa una operación mediante su identificador, el trabajo al que pertenece, su posición dentro del trabajo, la máquina requerida y su duración.
 \end{itemize}
 
-Esta representación permite identificar las operaciones y
-consultar sus características durante la construcción y evaluación
-de los calendarios.
+Esta representación permite identificar las operaciones y consultar sus características durante la construcción y evaluación de los calendarios.
 
 \subsubsection{Lectura y validación de instancias}
 
-Se desarrolló un mecanismo para leer las instancias desde archivos
-de texto. El formato de entrada utilizado comienza con dos valores
-enteros que indican el número de trabajos y el número de máquinas.
-Posteriormente, se especifican los pares máquina-duración
-correspondientes a cada operación.
+Se desarrolló un mecanismo para leer las instancias desde archivosde texto. El formato de entrada utilizado comienza con dos valores enteros que indican el número de trabajos y el número de máquinas. Posteriormente, se especifican los pares máquina-duración correspondientes a cada operación.
 
-De esta manera, cada par representa la máquina que debe procesar
-una operación y el tiempo necesario para completarla. El parser
-interpreta estos datos y construye las estructuras de trabajos y
-operaciones utilizadas por el resto del programa.
+De esta manera, cada par representa la máquina que debe procesar una operación y el tiempo necesario para completarla. El parser interpreta estos datos y construye las estructuras de trabajos y operaciones utilizadas por el resto del programa.
 
-Después de la lectura se realiza una validación de la instancia,
-comprobando aspectos como:
+Después de la lectura se realiza una validación de la instancia, comprobando aspectos como:
 
 \begin{itemize}
     \item Que las dimensiones de la instancia sean válidas.
@@ -209,131 +134,81 @@ comprobando aspectos como:
     dimensiones de la instancia.
 \end{itemize}
 
-Esta etapa permite detectar entradas incorrectas antes de iniciar
-el proceso de búsqueda.
+Esta etapa permite detectar entradas incorrectas antes de iniciar el proceso de búsqueda.
 
 \subsubsection{Cálculo de cotas}
 
-Para evaluar las soluciones se establecieron una cota inferior
-(\textit{Lower Bound}, LB) y una cota superior
-(\textit{Upper Bound}, UB).
+Para evaluar las soluciones se establecieron una cota inferior (\textit{Lower Bound}, LB) y una cota superior (\textit{Upper Bound}, UB).
 
-La cota superior se obtiene sumando las duraciones de todas las
-operaciones de la instancia:
+La cota superior se obtiene sumando las duraciones de todas las operaciones de la instancia:
 
 \[
 UB = \sum_{i=1}^{n}\sum_{j=1}^{m} t(O_{ij})
 \]
 
-donde $t(O_{ij})$ representa la duración de la operación $j$
-del trabajo $i$.
+donde $t(O_{ij})$ representa la duración de la operación $j$ del trabajo $i$.
 
-Por otra parte, la cota inferior se calcula considerando dos
-restricciones del problema: la carga de trabajo de cada trabajo
-y la carga de procesamiento de cada máquina. Por lo tanto:
+Por otra parte, la cota inferior se calcula considerando dos restricciones del problema: la carga de trabajo de cada trabajo y la carga de procesamiento de cada máquina. Por lo tanto:
 
 \[
 LB = \max(LB_{\text{trabajos}},
           LB_{\text{máquinas}})
 \]
 
-La primera corresponde a la mayor suma de duraciones entre
-todos los trabajos, mientras que la segunda representa la mayor
-suma de duraciones entre todas las máquinas.
+La primera corresponde a la mayor suma de duraciones entre todos los trabajos, mientras que la segunda representa la mayor suma de duraciones entre todas las máquinas.
 
-Estas cotas se utilizan posteriormente para normalizar el valor
-de la función objetivo.
+Estas cotas se utilizan posteriormente para normalizar el valor de la función objetivo.
 
 \subsection{Representación de las soluciones}
 
-Una vez definido el modelo del problema, se estableció una
-representación para los calendarios de procesamiento. Se utilizó
-una estructura denominada \texttt{Schedule}, basada en una lista
-de operaciones para cada máquina.
+Una vez definido el modelo del problema, se estableció una representación para los calendarios de procesamiento. Se utilizó una estructura denominada \texttt{Schedule}, basada en una lista de operaciones para cada máquina.
 
-La estructura \texttt{MachineOrder} almacena los identificadores
-de las operaciones en el orden en que serán procesadas por cada
-máquina. Por consiguiente, cada posición de la estructura
-corresponde a una máquina y contiene la secuencia de operaciones
-asignadas a ella.
+La estructura \texttt{MachineOrder} almacena los identificadores de las operaciones en el orden en que serán procesadas por cada máquina. Por consiguiente, cada posición de la estructura corresponde a una máquina y contiene la secuencia de operaciones asignadas a ella.
 
-Esta representación permite modificar el orden de procesamiento
-de las operaciones sin alterar la máquina a la que pertenece
-cada una.
+Esta representación permite modificar el orden de procesamiento de las operaciones sin alterar la máquina a la que pertenece cada una.
 
-Es importante señalar que agrupar las operaciones por máquina
-no garantiza por sí mismo que el calendario sea factible. También
-deben respetarse las restricciones de precedencia entre las
-operaciones de un mismo trabajo. Por esta razón, la factibilidad
-se verifica durante la evaluación de cada solución.
+Es importante señalar que agrupar las operaciones por máquina no garantiza por sí mismo que el calendario sea factible. También deben respetarse las restricciones de precedencia entre las operaciones de un mismo trabajo. Por esta razón, la factibilidad se verifica durante la evaluación de cada solución.
 
 \subsection{Evaluación de soluciones}
 
-La evaluación de una solución es una etapa fundamental, ya que
-permite determinar su calidad y comprobar si cumple las
-restricciones del JSSP.
+La evaluación de una solución es una etapa fundamental, ya que permite determinar su calidad y comprobar si cumple las restricciones del JSSP.
 
-Para realizar esta evaluación se construye un grafo dirigido
-que representa las relaciones de precedencia entre las
-operaciones. Se consideran dos tipos de restricciones:
+Para realizar esta evaluación se construye una grafica dirigida que representa las relaciones de precedencia entre las operaciones. Se consideran dos tipos de restricciones:
 
 \begin{itemize}
-    \item \textbf{Precedencia entre operaciones de un trabajo:}
-    las operaciones deben ejecutarse respetando el orden
+    \item \textbf{Precedencia entre operaciones de un trabajo:} las operaciones deben ejecutarse respetando el orden
     establecido en cada trabajo.
 
-    \item \textbf{Orden de procesamiento de una máquina:}
-    las operaciones asignadas a una misma máquina deben
-    procesarse siguiendo el orden definido en el calendario.
+    \item \textbf{Orden de procesamiento de una máquina:} las operaciones asignadas a una misma máquina deben procesarse siguiendo el orden definido en el calendario.
 \end{itemize}
 
-Cada operación se representa mediante un vértice del grafo,
-mientras que las restricciones de precedencia se representan
-mediante aristas dirigidas.
+Cada operación se representa mediante un vértice de la grafica, mientras que las restricciones de precedencia se representan mediante aristas dirigidas.
 
 \subsubsection{Detección de ciclos y factibilidad}
 
-Para comprobar si un calendario es factible se utiliza el
-ordenamiento topológico mediante el algoritmo de Kahn.
+Para comprobar si un calendario es factible se utiliza el ordenamiento topológico mediante el algoritmo de Kahn.
 
-Este procedimiento permite procesar los vértices del grafo
-respetando sus dependencias. Si se consigue procesar la totalidad
-de las operaciones, significa que el grafo es acíclico y que
-el calendario satisface las restricciones de precedencia
-modeladas.
+Este procedimiento permite procesar los vértices de la grafica respetando sus dependencias. Si se consigue procesar la totalidad de las operaciones, significa que la grafica es acíclico y que el calendario satisface las restricciones de precedencia modeladas.
 
-En cambio, si quedan vértices sin procesar, se detecta la
-existencia de ciclos o dependencias que impiden completar
-el ordenamiento topológico. En este caso, la solución se
-considera infactible.
+En cambio, si quedan vértices sin procesar, se detecta la existencia de ciclos o dependencias que impiden completar el ordenamiento topológico. En este caso, la solución se considera infactible.
 
 \subsubsection{Cálculo del makespan}
 
-Cuando el grafo es acíclico, se calculan los tiempos de inicio
-y finalización de las operaciones respetando las dependencias
-establecidas.
+Cuando la grafica es acíclico, se calculan los tiempos de inicio y finalización de las operaciones respetando las dependencias establecidas.
 
-El objetivo principal del JSSP es minimizar el tiempo total
-necesario para completar todos los trabajos, conocido como
-\textit{makespan}. Este valor corresponde al mayor tiempo
-de finalización entre todas las operaciones:
+El objetivo principal del JSSP es minimizar el tiempo total necesario para completar todos los trabajos, conocido como \textit{makespan}. Este valor corresponde al mayor tiempo de finalización entre todas las operaciones:
 
 \[
 C_{\max} = \max_{i,j} C_{ij}
 \]
 
-donde $C_{ij}$ representa el tiempo de finalización de la
-operación $j$ del trabajo $i$.
+donde $C_{ij}$ representa el tiempo de finalización de la operación $j$ del trabajo $i$.
 
-Por lo tanto, una solución con un menor valor de
-$C_{\max}$ representa un calendario de procesamiento más
-eficiente, siempre que sea factible.
+Por lo tanto, una solución con un menor valor de $C_{\max}$ representa un calendario de procesamiento más eficiente, siempre que sea factible.
 
 \subsubsection{Función objetivo}
 
-Para evaluar tanto la calidad como la factibilidad de las
-soluciones se utiliza una función de costo que combina el
-makespan normalizado con una penalización por ciclos:
+Para evaluar tanto la calidad como la factibilidad de las soluciones se utiliza una función de costo que combina el makespan normalizado con una penalización por ciclos:
 
 \[
 f(X) =
@@ -352,20 +227,13 @@ donde:
     sin procesar durante la evaluación topológica.
 \end{itemize}
 
-El primer término permite normalizar el makespan con respecto
-a las cotas calculadas para la instancia. El segundo término
-penaliza las soluciones que presentan ciclos.
+El primer término permite normalizar el makespan con respecto a las cotas calculadas para la instancia. El segundo término penaliza las soluciones que presentan ciclos.
 
-De esta manera, las soluciones factibles se evalúan mediante
-su makespan normalizado, mientras que las soluciones
-infactibles reciben una penalización que incrementa su costo.
+De esta manera, las soluciones factibles se evalúan mediante su makespan normalizado, mientras que las soluciones infactibles reciben una penalización que incrementa su costo.
 
 \subsection{Generación de soluciones vecinas}
 
-Para explorar diferentes calendarios se implementó un mecanismo
-de generación de soluciones vecinas. La vecindad se basa en
-intercambiar operaciones adyacentes dentro de la secuencia
-correspondiente a una máquina.
+Para explorar diferentes calendarios se implementó un mecanismo de generación de soluciones vecinas. La vecindad se basa en intercambiar operaciones adyacentes dentro de la secuencia correspondiente a una máquina.
 
 Si una máquina contiene una secuencia de operaciones como:
 
@@ -373,36 +241,25 @@ Si una máquina contiene una secuencia de operaciones como:
 M_k = [O_1,O_2,O_3,O_4]
 \]
 
-un movimiento puede intercambiar dos operaciones consecutivas,
-obteniendo, por ejemplo:
+un movimiento puede intercambiar dos operaciones consecutivas, obteniendo, por ejemplo:
 
 \[
 M_k' = [O_1,O_3,O_2,O_4]
 \]
 
-Este movimiento modifica el orden de procesamiento de las
-operaciones sin cambiar su asignación a las máquinas.
+Este movimiento modifica el orden de procesamiento de las operaciones sin cambiar su asignación a las máquinas.
 
-Cada movimiento se aplica sobre una copia del calendario
-original, de manera que la solución actual no sea modificada
-accidentalmente durante la generación de candidatos.
+Cada movimiento se aplica sobre una copia del calendario original, de manera que la solución actual no sea modificada accidentalmente durante la generación de candidatos.
 
-Después de realizar el intercambio, la nueva solución se
-evalúa mediante el grafo de restricciones. Esto es necesario
-porque un cambio en el orden de una máquina puede introducir
-ciclos al combinarse con las precedencias de los trabajos.
+Después de realizar el intercambio, la nueva solución se evalúa mediante el grfica de restricciones. Esto es necesario porque un cambio en el orden de una máquina puede introducir ciclos al combinarse con las precedencias de los trabajos.
 
-La selección aleatoria de movimientos permite explorar
-diferentes regiones del espacio de búsqueda.
+La selección aleatoria de movimientos permite explorar diferentes regiones del espacio de búsqueda.
 
 \subsection{Implementación de la heurística OBA2-N}
 
-Una vez definidos los mecanismos de representación, evaluación
-y generación de vecinos, se integró la heurística
-\textit{Old Bachelor Acceptance}, en su variante OBA2-N.
+Una vez definidos los mecanismos de representación, evaluación y generación de vecinos, se integró la heurística \textit{Old Bachelor Acceptance}, en su variante OBA2-N.
 
-El algoritmo mantiene una solución actual, denominada
-metafóricamente el ``soltero'', y utiliza un umbral dinámico
+El algoritmo mantiene una solución actual, denominada metafóricamente el ``soltero'', y utiliza un umbral dinámico
 para decidir si acepta una solución candidata.
 
 Sea $X$ la solución actual y $X'$ una solución vecina.
@@ -414,36 +271,19 @@ f(X') < f(X) + T
 
 donde $T$ representa el umbral de aceptación.
 
-Este criterio permite aceptar soluciones que no necesariamente
-mejoran el costo de la solución actual, siempre que se
-encuentren dentro del límite establecido por el umbral.
-Por lo tanto, la búsqueda no se restringe únicamente a
-movimientos de mejora.
+Este criterio permite aceptar soluciones que no necesariamente mejoran el costo de la solución actual, siempre que se encuentren dentro del límite establecido por el umbral. Por lo tanto, la búsqueda no se restringe únicamente a movimientos de mjora.
 
 \subsubsection{Actualización del umbral}
 
-La variante OBA2 utiliza un mecanismo de actualización
-dinámica del umbral. Su comportamiento se caracteriza por
-un descenso pronunciado y un incremento moderado, lo que
-permite modificar el nivel de exigencia durante el proceso
+La variante OBA2 utiliza un mecanismo de actualización dinámica del umbral. Su comportamiento se caracteriza por un descenso pronunciado y un incremento moderado, lo que permite modificar el nivel de exigencia durante el proceso
 de búsqueda.
 
-El tamaño del decremento aumenta de manera cuadrática,
-mientras que el incremento sigue un comportamiento lineal.
-Además, se considera la cantidad de aceptaciones fáciles,
-relacionadas con el tiempo transcurrido desde la última
+El tamaño del decremento aumenta de manera cuadrática, mientras que el incremento sigue un comportamiento lineal. Además, se considera la cantidad de aceptaciones fáciles, relacionadas con el tiempo transcurrido desde la última
 aceptación.
 
-La variante OBA2-N incorpora una modificación específica
-en el criterio de aceptación: cuando el umbral toma valores
-negativos, estos se consideran como cero para aplicar la
-regla de aceptación.
+La variante OBA2-N incorpora una modificación específica en el criterio de aceptación: cuando el umbral toma valores negativos, estos se consideran como cero para aplicar la regla de aceptación.
 
-Esto permite establecer un límite al efecto de los umbrales
-negativos durante la decisión de aceptar una solución
-candidata. Es importante distinguir que esta modificación
-se aplica al criterio de aceptación y no significa que
-el valor almacenado del umbral deba eliminarse o modificarse
+Esto permite establecer un límite al efecto de los umbrales negativos durante la decisión de aceptar una solución candidata. Es importante distinguir que esta modificación se aplica al criterio de aceptación y no significa que el valor almacenado del umbral deba eliminarse o modificarse
 automáticamente.
 
 \subsubsection{Proceso de búsqueda}
@@ -470,50 +310,26 @@ en las siguientes etapas:
     de iteraciones establecido.
 \end{enumerate}
 
-Durante la búsqueda resulta conveniente distinguir entre
-la solución actual, la mejor solución observada y la mejor
-solución factible. Esta separación permite conservar el
-mejor calendario válido encontrado, incluso cuando la
-solución actual o la mejor solución global no sean
+Durante la búsqueda resulta conveniente distinguir entre la solución actual, la mejor solución observada y la mejor solución factible. Esta separación permite conservar el mejor calendario válido encontrado, incluso cuando la solución actual o la mejor solución global no sean
 factibles.
 
 \subsection{Inicialización de soluciones}
 
-Antes de ejecutar la heurística es necesario construir un
-calendario inicial. Para ello, se consideran las operaciones
-de la instancia y se agrupan de acuerdo con las máquinas
-que deben procesarlas.
+Antes de ejecutar la heurística es necesario construir un calendario inicial. Para ello, se consideran las operaciones de la instancia y se agrupan de acuerdo con las máquinas que deben procesarlas.
 
-La inicialización aleatoria permite generar diferentes
-órdenes de procesamiento para las máquinas. Sin embargo,
-mezclar independientemente todas las secuencias puede
-producir calendarios con ciclos, debido a que no se
-garantiza que las precedencias de los trabajos sean
-respetadas.
+La inicialización aleatoria permite generar diferentes órdenes de procesamiento para las máquinas. Sin embargo, mezclar independientemente todas las secuencias puede producir calendarios con ciclos, debido a que no se garantiza que las precedencias de los trabajos sean respetadas.
 
-Por esta razón, la solución inicial debe someterse al
-mismo procedimiento de evaluación utilizado durante
-la búsqueda, con el propósito de identificar si es
-factible y calcular su costo.
+Por esta razón, la solución inicial debe someterse al mismo procedimiento de evaluación utilizado durante la búsqueda, con el propósito de identificar si es factible y calcular su costo.
 
-La utilización de distintas semillas permite obtener
-diferentes soluciones iniciales y explorar distintas
-trayectorias de búsqueda.
+La utilización de distintas semillas permite obtener diferentes soluciones iniciales y explorar distintas trayectorias de búsqueda.
 
 \subsection{Experimentación y registro de resultados}
 
-Para analizar el comportamiento de la heurística se
-considera la ejecución de múltiples corridas independientes
-sobre una misma instancia. Cada corrida utiliza una
-semilla diferente para controlar las decisiones aleatorias
-del algoritmo.
+Para analizar el comportamiento de la heurística se considera la ejecución de múltiples corridas independientes sobre una misma instancia. Cada corrida utiliza una semilla diferente para controlar las decisiones aleatorias del algoritmo.
 
-La utilización de un generador aleatorio local por corrida
-permite reproducir los experimentos cuando se mantienen
-constantes la instancia, la configuración y la semilla.
+La utilización de un generador aleatorio local por corrida permite reproducir los experimentos cuando se mantienen constantes la instancia, la configuración y la semilla.
 
-Durante cada ejecución se recopilan métricas que permiten
-analizar el comportamiento de OBA2-N, entre ellas:
+Durante cada ejecución se recopilan métricas que permiten analizar el comportamiento de OBA2-N, entre ellas:
 
 \begin{itemize}
     \item Makespan de la mejor solución factible encontrada.
@@ -526,188 +342,87 @@ analizar el comportamiento de OBA2-N, entre ellas:
     \item Indicador de factibilidad de la solución.
 \end{itemize}
 
-Los resultados de cada corrida se almacenan en archivos
-de texto independientes. Cada archivo contiene la
-representación del calendario y la información relacionada
-con la ejecución.
+Los resultados de cada corrida se almacenan en archivos de texto independientes. Cada archivo contiene la representación del calendario y la información relacionada con la ejecución.
 
-Adicionalmente, se contempla la generación de un resumen
-global que permita comparar los resultados obtenidos
-con las diferentes semillas. Entre las medidas de interés
-se encuentran el mejor, peor y promedio del makespan
-de las corridas factibles, así como el porcentaje de
-ejecuciones que lograron encontrar una solución factible.
+Adicionalmente, se contempla la generación de un resumen global que permita comparar los resultados obtenidos con las diferentes semillas. Entre las medidas de interés se encuentran el mejor, peor y promedio del makespan de las corridas factibles, así como el porcentaje de ejecuciones que lograron encontrar una solución factible.
 
 \subsection{Flujo general del programa}
 
-La ejecución completa del proyecto sigue una secuencia
-de etapas que integra los módulos descritos anteriormente:
+La ejecución completa del proyecto sigue una secuencia de etapas que integra los módulos descritos anteriormente:
 
 \begin{enumerate}
-    \item \textbf{Lectura de la instancia:} se recibe el archivo
-    de entrada y se construyen los trabajos y operaciones.
+    \item \textbf{Lectura de la instancia:} se recibe el archivo de entrada y se construyen los trabajos y operaciones.
 
-    \item \textbf{Validación:} se comprueba la consistencia
-    de los datos y se calculan las cotas inferior y superior.
+    \item \textbf{Validación:} se comprueba la consistencia de los datos y se calculan las cotas inferior y superior.
 
-    \item \textbf{Configuración:} se establecen los parámetros
-    necesarios para ejecutar OBA2-N.
+    \item \textbf{Configuración:} se establecen los parámetros necesarios para ejecutar OBA2-N.
 
-    \item \textbf{Inicialización:} se genera un calendario
-    inicial y se evalúa su factibilidad.
+    \item \textbf{Inicialización:} se genera un calendario inicial y se evalúa su factibilidad.
 
-    \item \textbf{Generación de vecinos:} se selecciona una
-    máquina y se realiza un movimiento sobre su secuencia
-    de operaciones.
+    \item \textbf{Generación de vecinos:} se selecciona una máquina y se realiza un movimiento sobre su secuencia de operaciones.
 
-    \item \textbf{Evaluación y aceptación:} se calcula el
-    costo de la solución candidata y se aplica el criterio
-    de aceptación de OBA2-N.
+    \item \textbf{Evaluación y aceptación:} se calcula el costo de la solución candidata y se aplica el criterio de aceptación de OBA2-N.
 
-    \item \textbf{Actualización:} se actualiza el umbral y
-    se registran las mejores soluciones encontradas.
+    \item \textbf{Actualización:} se actualiza el umbral y se registran las mejores soluciones encontradas.
 
-    \item \textbf{Finalización:} al alcanzar el límite de
-    iteraciones, se guardan las métricas y el resultado
-    de la corrida.
+    \item \textbf{Finalización:} al alcanzar el límite de iteraciones, se guardan las métricas y el resultado de la corrida.
 
-    \item \textbf{Experimentación:} se repite el procedimiento
-    utilizando diferentes semillas para comparar los
-    resultados.
+    \item \textbf{Experimentación:} se repite el procedimiento utilizando diferentes semillas para comparar los resultados.
 \end{enumerate}
 
-La separación de estas etapas permite mantener independiente
-la lógica del problema respecto de la heurística de
-optimización, facilitando la revisión, prueba y modificación
-de los componentes del proyecto.
+La separación de estas etapas permite mantener independiente la lógica del problema respecto de la heurística de optimización, facilitando la revisión, prueba y modificación de los componentes del proyecto.
 
 \subsection{Estructura del proyecto}
 \label{sec:estructura}
 
-El proyecto se organizó mediante una estructura modular utilizando
-. Esta organización permite separar las responsabilidades relacionadas
-con la definición del problema, la representación de soluciones,
-la evaluación de calendarios y la ejecución de la heurística OBA2-N.
+El proyecto se organizó mediante una estructura modular utilizando. Esta organización permite separar las responsabilidades relacionadas con la definición del problema, la representación de soluciones, la evaluación de calendarios y la ejecución de la heurística OBA2-N.
 
-Como se muestra en la Figura~\ref{fig:arbol}, el proyecto se divide
-principalmente en los directorios \texttt{cmd}, \texttt{data},
-\texttt{gantt} e \texttt{internal}. Cada uno contiene los archivos
-necesarios para realizar una tarea específica dentro del proceso
-de resolución del JSSP.
+Como se muestra en la Figura~\ref{fig:arbol}, el proyecto se divide principalmente en los directorios \texttt{cmd}, \texttt{data}, \texttt{gantt} e \texttt{internal}. Cada uno contiene los archivos necesarios para realizar una tarea específica dentro del proceso de resolución del JSSP.
 
 \begin{itemize}
 
-    \item \textbf{cmd:} contiene el punto de entrada de la aplicación.
-    Dentro de \texttt{jssp-oba} se encuentra el archivo
-    \texttt{main.go}, encargado de coordinar la ejecución del
-    programa, recibir los parámetros necesarios y conectar los
-    diferentes módulos del proyecto.
+\item \textbf{cmd:} contiene el punto de entrada de la aplicación. Dentro de \texttt{jssp-oba} se encuentra el archivo \texttt{main.go}, encargado de coordinar la ejecución del programa, recibir los parámetros necesarios y conectar los diferentes módulos del proyecto.
 
-    \item \textbf{data:} almacena los archivos utilizados y
-    generados durante los experimentos. Se divide en cuatro
-    directorios:
-    \begin{itemize}
-        \item \texttt{configs}: contiene los archivos JSON con
-        los parámetros de configuración para las diferentes
-        instancias y ejecuciones del algoritmo.
+\item \textbf{data:} almacena los archivos utilizados y generados durante los experimentos. Se divide en cuatro directorios:
+  \begin{itemize}
+  \item \texttt{configs}: contiene los archivos JSON con los parámetros de configuración para las diferentes instancias y ejecuciones del algoritmo.
 
-        \item \texttt{instances}: almacena las instancias del
-        problema JSSP que serán utilizadas como entrada del
-        programa.
+  \item \texttt{instances}: almacena las instancias del problema JSSP que serán utilizadas como entrada del programa.
 
-        \item \texttt{seeds}: contiene el archivo con las semillas
-        utilizadas para controlar las decisiones aleatorias y
-        permitir la repetición de los experimentos.
+  \item \texttt{seeds}: contiene el archivo con las semillas utilizadas para controlar las decisiones aleatorias y permitir la repetición de los experimentos.
 
-        \item \texttt{results}: almacena los archivos de salida
-        generados durante las ejecuciones, incluyendo la
-        información de las soluciones y las métricas obtenidas.
-    \end{itemize}
+  \item \texttt{results}: almacena los archivos de salida generados durante las ejecuciones, incluyendo la información de las soluciones y las métricas obtenidas.
+  \end{itemize}
 
-    \item \textbf{gantt:} contiene los recursos relacionados
-    con la generación de diagramas de Gantt. El archivo
-    \texttt{gantt.py} permite procesar la información de una
-    solución y generar una representación gráfica del
-    calendario de operaciones.
+\item \textbf{gantt:} contiene los recursos relacionados con la generación de diagramas de Gantt. El archivo \texttt{gantt.py} permite procesar la información de una solución y generar una representación gráfica del calendario de operaciones.
 
-    \item \textbf{internal:} contiene la implementación de los
-    módulos principales del proyecto. En este directorio se
-    concentra la lógica necesaria para modelar el problema,
-    generar soluciones, evaluarlas y ejecutar la heurística
-    de optimización. Se divide en los siguientes paquetes:
+\item \textbf{internal:} contiene la implementación de los módulos principales del proyecto. En este directorio se concentra la lógica necesaria para modelar el problema, generar soluciones, evaluarlas y ejecutar la heurística de optimización. Se divide en los siguientes paquetes:
 
-    \begin{itemize}
+  \begin{itemize}
 
-        \item \texttt{oba}: implementa la heurística
-        \textit{Old Bachelor Acceptance}, variante OBA2-N.
-        El archivo \texttt{config.go} contiene los parámetros
-        necesarios para configurar el algoritmo, mientras que
-        \texttt{oba.go} contiene la lógica del proceso de
-        búsqueda y el criterio de aceptación de soluciones.
+  \item \texttt{oba}: implementa la heurística \textit{Old Bachelor Acceptance}, variante OBA2-N. El archivo \texttt{config.go} contiene los parámetros necesarios para configurar el algoritmo, mientras que \texttt{oba.go} contiene la lógica del proceso de búsqueda y el criterio de aceptación de soluciones.
 
-        \item \texttt{neighborhood}: se encarga de generar
-        soluciones vecinas a partir de un calendario existente.
-        El archivo \texttt{generate.go} gestiona la generación
-        de candidatos y \texttt{moves.go} contiene los
-        movimientos que modifican el orden de las operaciones
-        dentro de las máquinas.
+  \item \texttt{neighborhood}: se encarga de generar soluciones vecinas a partir de un calendario existente. El archivo \texttt{generate.go} gestiona la generación de candidatos y \texttt{moves.go} contiene los movimientos que modifican el orden de las operaciones dentro de las máquinas.
 
-        \item \texttt{objective}: contiene los procedimientos
-        utilizados para evaluar las soluciones. 
-        \texttt{cycles.go} construye el grafo de precedencias
-        y permite identificar ciclos; \texttt{makespan.go}
-        calcula el tiempo total de finalización de los trabajos,
-        y \texttt{evaluate.go} integra estas operaciones para
-        obtener el valor de la función objetivo.
+  \item \texttt{objective}: contiene los procedimientos utilizados para evaluar las soluciones.  \texttt{cycles.go} construye la grafica de precedencias y permite identificar ciclos; \texttt{makespan.go} calcula el tiempo total de finalización de los trabajos, y \texttt{evaluate.go} integra estas operaciones para obtener el valor de la función objetivo.
 
-        \item \texttt{problem}: define las estructuras de datos
-        utilizadas para representar una instancia del JSSP.
-        \texttt{instance.go} y \texttt{operation.go} contienen
-        las estructuras correspondientes a los trabajos y
-        operaciones. Por su parte, \texttt{parser.go} permite
-        leer las instancias desde archivos, \texttt{validate.go}
-        verifica la consistencia de los datos y
-        \texttt{bounds.go} calcula las cotas inferior y superior
-        del problema.
+  \item \texttt{problem}: define las estructuras de datos utilizadas para representar una instancia del JSSP. \texttt{instance.go} y \texttt{operation.go} contienen las estructuras correspondientes a los trabajos y operaciones. Por su parte, \texttt{parser.go} permite leer las instancias desde archivos, \texttt{validate.go} verifica la consistencia de los datos y \texttt{bounds.go} calcula las cotas inferior y superior del problema.
 
-        \item \texttt{reporting}: contiene los procedimientos
-        para almacenar los resultados de las ejecuciones.
-        El archivo \texttt{export.go} se encarga de generar
-        los archivos de salida con la información de las
-        soluciones y sus métricas.
+  \item \texttt{reporting}: contiene los procedimientos para almacenar los resultados de las ejecuciones. El archivo \texttt{export.go} se encarga de genera los archivos de salida con la información de las soluciones y sus métricas.
 
-        \item \texttt{solution}: define la representación
-        de los calendarios utilizados durante la búsqueda.
-        \texttt{schedule.go} contiene la estructura principal
-        de una solución, \texttt{representation.go} proporciona
-        las operaciones relacionadas con su representación
-        y \texttt{clone.go} permite crear copias independientes
-        de los calendarios antes de aplicar modificaciones.
+  \item \texttt{solution}: define la representación de los calendarios utilizados durante la búsqueda. \texttt{schedule.go} contiene la estructura principal de una solución, \texttt{representation.go} proporciona las operaciones relacionadas con su representación y \texttt{clone.go} permite crear copias independientes de los calendarios antes de aplicar modificaciones.
 
-        \item \texttt{solver}: coordina la preparación y
-        ejecución de los experimentos. 
-        \texttt{initialize.go} construye la solución inicial,
-        \texttt{seeds.go} gestiona las semillas utilizadas
-        para las ejecuciones aleatorias y
-        \texttt{experiment.go} permite organizar las corridas
-        experimentales.
+  \item \texttt{solver}: coordina la preparación y ejecución de los experimentos. \texttt{initialize.go} construye la solución inicial, \texttt{seeds.go} gestiona las semillas utilizadas  para las ejecuciones aleatorias y \texttt{experiment.go} permite organizar las corridas experimentales.
 
-    \end{itemize}
+  \end{itemize}
 
-    \item \textbf{go.mod:} define el módulo de Go y administra
-    la información necesaria para compilar y organizar las
-    dependencias del proyecto.
+\item \textbf{go.mod:} define el módulo de Go y administra la información necesaria para compilar y organizar las dependencias del proyecto.
 
-    \item \textbf{README.md:} contiene la documentación general
-    del proyecto, incluyendo información sobre su propósito,
-    configuración y ejecución.
+\item \textbf{README.md:} contiene la documentación general del proyecto, incluyendo información sobre su propósito, configuración y ejecución.
 
 \end{itemize}
 
-Esta organización facilita el mantenimiento del código,
-la realización de pruebas individuales y la posibilidad de
-modificar algún componente del algoritmo sin afectar
-directamente al resto de la implementación.
+Esta organización facilita el mantenimiento del código, la realización de pruebas individuales y la posibilidad de modificar algún componente del algoritmo sin afectar directamente al resto de la implementación.
 
 \begin{figure}[H]
     \centering
@@ -770,13 +485,307 @@ directamente al resto de la implementación.
 
 
 \section{Resultados}
+\label{sec:resultados}
 
+En esta sección se presentan los resultados obtenidos al ejecutar el algoritmo OBA2-N sobre tres instancias del problema Job-Shop Scheduling Problem (JSSP). El objetivo de los experimentos es analizar el comportamiento del algoritmo bajo diferentes tamaños de instancia y comparar la calidad de las soluciones obtenidas a partir de distintas semillas aleatorias.
+
+Para cada instancia se realizaron cinco ejecuciones independientes, utilizando las semillas 10, 20, 30, 40 y 50. Los resultados se comparan principalmente mediante el makespan, debido a que representa el tiempo total necesario para completar todos los trabajos y constituye la función objetivo del problema.
+
+\subsection{Configuración experimental}
+\label{subsec:configuracion-experimental}
+
+Para realizar los experimentos se utilizó una configuración de un millón de iteraciones por ejecución. Los parámetros empleados para el algoritmo OBA2-N se muestran en la Tabla~\ref{tab:configuracion-experimental}.
+
+\begin{table}[H]
+    \centering
+    \caption{Configuración utilizada en los experimentos.}
+    \label{tab:configuracion-experimental}
+    \begin{tabular}{lc}
+        \hline
+        \textbf{Parámetro} & \textbf{Valor} \\
+        \hline
+        Iteraciones & 1\,000\,000 \\
+        Delta & 5 unidades de makespan \\
+        EasyAge & 56 \\
+        Puntos de historial & 100 \\
+        Semillas & 10, 20, 30, 40 y 50 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Se evaluaron tres instancias con diferentes dimensiones: $40 \times 40$, $50 \times 20$ y $100 \times 100$. Para cada una se calcularon una cota inferior ($LB$) y una cota superior ($UB$), utilizadas como referencia para normalizar el costo de las soluciones. Estos valores se presentan en la Tabla~\ref{tab:cotas-instancias}.
+
+\begin{table}[H]
+    \centering
+    \caption{Cotas inferior y superior de las instancias evaluadas.}
+    \label{tab:cotas-instancias}
+    \begin{tabular}{ccc}
+        \hline
+        \textbf{Instancia} & \textbf{LB} & \textbf{UB} \\
+        \hline
+        $40 \times 40$   & 103    & 3\,251 \\
+        $50 \times 20$   & 5\,621  & 100\,947 \\
+        $100 \times 100$ & 56\,381 & 5\,008\,631 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Para analizar los resultados se consideran dos medidas adicionales al makespan. La primera es la brecha respecto a la cota inferior, definida como:
+
+\[
+    \text{Brecha}_{LB} =
+    \frac{C_{\max}-LB}{LB}\times 100
+\]
+
+La segunda corresponde al costo normalizado de la solución:
+
+\[
+    f(X) =
+    \frac{C_{\max}-LB}{UB-LB}
+\]
+
+donde $C_{\max}$ representa el makespan de la solución evaluada. Para soluciones factibles, el costo es una función lineal del makespan; por esta razón, la comparación de calidad se centra principalmente en este último indicador.
+
+Es importante señalar que la brecha respecto a $LB$ no representa directamente la distancia al óptimo. La cota inferior constituye una referencia para evaluar las soluciones, pero puede ser poco ajustada, especialmente en algunas de las instancias consideradas.
+
+\subsection{Resultados por instancia}
+\label{subsec:resultados-instancia}
+
+A continuación se presentan los resultados de las cinco ejecuciones realizadas para cada instancia. Se muestran la semilla utilizada, el makespan obtenido, el costo normalizado y la brecha respecto a la cota inferior.
+
+\subsubsection{Instancia $40 \times 40$}
+
+Los resultados correspondientes a la instancia $40 \times 40$ se presentan en la Tabla~\ref{tab:resultados-40x40}.
+
+\begin{table}[H]
+    \centering
+    \caption{Resultados obtenidos para la instancia $40 \times 40$.}
+    \label{tab:resultados-40x40}
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Semilla} & \textbf{Makespan} & \textbf{Costo} & \textbf{Brecha vs. LB} \\
+        \hline
+        10 & 187 & 0.026684 & 81.6\% \\
+        20 & 184 & 0.025731 & 78.6\% \\
+        30 & 181 & 0.024778 & 75.7\% \\
+        40 & 185 & 0.026048 & 79.6\% \\
+        50 & 181 & 0.024778 & 75.7\% \\
+        \hline
+    \end{tabular}
+\end{table}
+
+En esta instancia, el mejor resultado se obtuvo con las semillas 30 y 50, ambas con un makespan de 181. Por otra parte, la ejecución con la semilla 10 produjo el peor resultado, con un makespan de 187. La diferencia entre ambas soluciones es de seis unidades de tiempo.
+
+\subsubsection{Instancia $50 \times 20$}
+
+La Tabla~\ref{tab:resultados-50x20} muestra los resultados obtenidos para la instancia $50 \times 20$.
+
+\begin{table}[H]
+    \centering
+    \caption{Resultados obtenidos para la instancia $50 \times 20$.}
+    \label{tab:resultados-50x20}
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Semilla} & \textbf{Makespan} & \textbf{Costo} & \textbf{Brecha vs. LB} \\
+        \hline
+        10 & 6\,039 & 0.004385 & 7.4\% \\
+        20 & 6\,168 & 0.005738 & 9.7\% \\
+        30 & 6\,040 & 0.004395 & 7.5\% \\
+        40 & 6\,000 & 0.003976 & 6.7\% \\
+        50 & 5\,974 & 0.003703 & 6.3\% \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Para esta instancia, la mejor solución corresponde a la semilla 50, con un makespan de 5\,974. En contraste, la semilla 20 obtuvo el mayor makespan, con un valor de 6\,168. La diferencia entre estos resultados es de 194 unidades de tiempo.
+
+En comparación con las otras instancias, $50 \times 20$ presenta las menores brechas respecto a su cota inferior, con valores entre 6.3\% y 9.7\%. Esto indica que las soluciones obtenidas se encuentran relativamente más próximas a la cota calculada para esta instancia.
+
+\subsubsection{Instancia $100 \times 100$}
+
+Finalmente, la Tabla~\ref{tab:resultados-100x100} presenta los resultados de la instancia de mayor tamaño, $100 \times 100$.
+
+\begin{table}[H]
+    \centering
+    \caption{Resultados obtenidos para la instancia $100 \times 100$.}
+    \label{tab:resultados-100x100}
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Semilla} & \textbf{Makespan} & \textbf{Costo} & \textbf{Brecha vs. LB} \\
+        \hline
+        10 & 107\,148 & 0.010251 & 90.0\% \\
+        20 & 106\,977 & 0.010217 & 89.7\% \\
+        30 & 109\,276 & 0.010681 & 93.8\% \\
+        40 & 109\,661 & 0.010759 & 94.5\% \\
+        50 & 109\,043 & 0.010634 & 93.4\% \\
+        \hline
+    \end{tabular}
+\end{table}
+
+En esta instancia, la mejor solución se obtuvo con la semilla 20, alcanzando un makespan de 106\,977. La peor solución corresponde a la semilla 40, con un makespan de 109\,661. La diferencia entre ambas ejecuciones es de 2\,684 unidades de tiempo.
+
+Se observa que las brechas respecto a la cota inferior se encuentran entre 89.7\% y 94.5\%. Sin embargo, estos porcentajes no permiten concluir que las soluciones estén a esa misma distancia del óptimo, debido a que la cota inferior puede no ser suficientemente ajustada para esta instancia.
+
+\subsection{Comparación entre la mejor y la peor solución}
+\label{subsec:comparacion-mejor-peor}
+
+Con el propósito de analizar la variabilidad de los resultados obtenidos por OBA2-N, se comparó la mejor y la peor solución de cada instancia. Para esta comparación se tomó como criterio principal el makespan: una solución con un valor menor representa una mejor planificación, ya que permite completar todos los trabajos en menos tiempo.
+
+La Tabla~\ref{tab:comparacion-mejor-peor} resume los resultados de esta comparación.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparación entre la mejor y la peor solución por instancia.}
+    \label{tab:comparacion-mejor-peor}
+    \small
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{cccccc}
+        \hline
+        \textbf{Instancia} &
+        \textbf{Mejor solución} &
+        \textbf{Peor solución} &
+        \textbf{Diferencia} &
+        \textbf{Brecha LB mejor} &
+        \textbf{Brecha LB peor} \\
+        \hline
+        $40 \times 40$ &
+        181 (30 y 50) &
+        187 (10) &
+        6 &
+        75.7\% &
+        81.6\% \\
+
+        $50 \times 20$ &
+        5\,974 (50) &
+        6\,168 (20) &
+        194 &
+        6.3\% &
+        9.7\% \\
+
+        $100 \times 100$ &
+        106\,977 (20) &
+        109\,661 (40) &
+        2\,684 &
+        89.7\% &
+        94.5\% \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
+
+Para complementar la comparación, los costos normalizados asociados a las mejores y peores soluciones fueron los siguientes:
+
+\begin{itemize}
+    \item \textbf{Instancia $40 \times 40$:} el mejor costo fue 0.024778, mientras que el peor fue 0.026684.
+    \item \textbf{Instancia $50 \times 20$:} el mejor costo fue 0.003703, frente a un peor costo de 0.005738.
+    \item \textbf{Instancia $100 \times 100$:} el mejor costo fue 0.010217, mientras que el peor fue 0.010759.
+\end{itemize}
+
+Al comparar los resultados, se observa que la diferencia relativa entre la mejor y la peor solución se mantiene en un intervalo aproximado de 2.5\% a 3.3\% del makespan de la mejor solución. Esto muestra que, aunque las instancias presentan tamaños y escalas diferentes, la variación relativa entre las ejecuciones es similar.
+
+En general, los resultados muestran que la semilla utilizada influye en la calidad de la solución obtenida. Por ello, realizar varias ejecuciones independientes permite observar la variabilidad del algoritmo y tener una referencia más completa de su comportamiento, en lugar de evaluar su desempeño a partir de una sola ejecución.\newpage
+
+\subsection{Comparación de las graficas entre la mejor y la peor solución}
+\label{subsec:comparacion-graficas}
+
+Las Figuras ~\ref{fig:40x40s30} y ~\ref{fig:40x40s10} muestran la evolución de la razón makespan/LB en función del número de iteraciones para la mejor ejecución (semilla 30) y la peor (semilla 10) de la instancia 40 ×40. En ambos casos se observa un comportamiento similar: una fase inicial de descenso rápido entre 10⁴ y 10⁵ iteraciones, en la que la razón disminuye de aproximadamente 2.6 a valores cercanos a 2.0, seguida de una fase de refinamiento más lenta, caracterizada por mesetas y mejoras puntuales.
+
+La ejecución con semilla 30 partió de una razón aproximada de 2.57 y finalizó en 1.757, correspondiente a un makespan de 181. Su última mejora ocurrió alrededor de las 6×10⁵ iteraciones, permaneciendo estable durante el resto de la corrida. Por su parte, la ejecución con semilla 10 inició en aproximadamente 2.61 y concluyó en 1.816 (makespan de 187), con su última mejora cerca de las 9×10⁵ iteraciones.
+
+La diferencia final entre ambas ejecuciones es de seis unidades de makespan, equivalente a cerca de 3.3\% respecto a la mejor solución. Dado que la semilla 10 se mantuvo por encima de la semilla 30 durante gran parte de la búsqueda, es posible que la calidad de la solución inicial y las primeras decisiones aleatorias hayan influido en la trayectoria. Sin embargo, la mejora total es comparable en ambas corridas (≈ 0.8 en la razón), lo que indica que OBA2-N tuvo un comportamiento consistente independientemente de la semilla.
+
+Finalmente, los tramos planos al final de ambas curvas indican que la búsqueda dejó de encontrar mejoras antes de completar el millón de iteraciones, por lo que podría explorarse el ajuste de parámetros del umbral para favorecer una mayor diversificación en etapas avanzadas.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{curva40x40_30.png}
+    \caption{Proceso de la ejecución instancia 40x40 semilla 30.}
+    \label{fig:40x40s30}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{curva_40x40_10.png}
+    \caption{Proceso de la ejecución instancia 40x40 semilla 10.}
+    \label{fig:40x40s10}
+  \end{subfigure}
+  \caption{Comparativa ejecución instancia 40x40}
+\end{figure}
+
+Las Figuras ~\ref{fig:50x20s50} y ~\ref{fig:50x20s20} muestran la evolución de la razón makespan/LB para la mejor ejecución (semilla 50) y la peor (semilla 20) de la instancia 50 × 20. Ambas curvas presentan un descenso rápido entre 10⁴ y 10⁵ iteraciones, en el que la razón pasa de aproximadamente 1.55 a valores entre 1.19 y 1.23, seguido de una fase de refinamiento más gradual.
+
+La ejecución con semilla 50 finalizó con una razón de 1.063 (makespan de 5 974), mientras que la semilla 20 concluyó en 1.097 (makespan de 6 168). La diferencia es de 194 unidades de tiempo, cerca de 3.2 \% respecto a la mejor solución. La mejora total fue similar en ambas (≈ 0.47 y ≈ 0.46), por lo que la diferencia final se explica principalmente por la trayectoria durante la fase de refinamiento: la semilla 50 descendió de forma más continua, mientras que la semilla 20 presentó mesetas más prolongadas, por ejemplo cerca de 10⁵ y entre 4×10⁵ y 5×10⁵ iteraciones.
+
+A diferencia de lo observado en la instancia 40 × 40, ninguna de las curvas muestra un estancamiento prolongado al final de la búsqueda; ambas continúan registrando mejoras cerca de 10⁶ iteraciones. Esto sugiere que, para esta instancia, un mayor número de iteraciones podría producir soluciones de mejor calidad. Asimismo, las razones finales
+(1.06 a 1.10) son notablemente menores que en las otras instancias, lo que concuerda con las menores brechas respecto a LB reportadas en la Tabla 4.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{curva_50x20_50.png}
+    \caption{Proceso de la ejecución instancia 50x20 semilla 50.}
+    \label{fig:50x20s50}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{curva_50x20_20.png}
+    \caption{Proceso de la ejecución instancia 50x20 semilla 20.}
+    \label{fig:50x20s20}
+  \end{subfigure}
+  \caption{Comparativa ejecución instancia 50x20}
+\end{figure}
+
+Las Figuras ~\ref{fig:100x100s20} y ~\ref{fig:100x100s40} muestran la evolución de la razón makespan/LB para la mejor ejecución (semilla 20) y la peor (semilla 40) de la instancia 100 × 100. A diferencia de las instancias 40 × 40 y 50 × 20, ninguna de las curvas presenta mesetas apreciables: ambas descienden de forma casi continua durante todo el millón de iteraciones.
+
+La ejecución con semilla 20 pasó de una razón aproximada de 3.42 a 1.897 (makespan de 106 977), mientras que la de semilla 40 pasó de 3.58 a 1.945 (makespan de 109 661). La diferencia final es de 2 684 unidades de tiempo, cerca de 2.5 \% respecto a la mejor solución. La semilla 40 se mantuvo por encima de la semilla 20 durante todo el recorrido; aunque redujo parte de la diferencia inicial, no llegó a alcanzarla.
+
+Ambas curvas conservan una pendiente descendente al finalizar, lo que indica que la búsqueda no alcanzó a estabilizarse con el número de iteraciones utilizado. Esto sugiere que, para instancias de este tamaño, un millón de iteraciones resulta insuficiente y que un
+mayor presupuesto podría producir mejoras adicionales. Por ello, la brecha respecto a LB (89.7 \% y 94.5 \%) debe interpretarse considerando tanto la posible holgura de la cota inferior como el hecho de que el algoritmo no llegó a converger.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{curva100x100_20.png}
+    \caption{Proceso de la ejecución instancia 100x100 semilla 20.}
+    \label{fig:100x100s20}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.45\linewidth}
+     \centering
+    \includegraphics[width=\linewidth]{curva_100x100_40.png}
+    \caption{Proceso de la ejecución instancia 100x100 semilla 40.}
+    \label{fig:100x100s40}
+  \end{subfigure}
+  \caption{Comparativa ejecución instancia 100x100}
+\end{figure}
+
+El millón de iteraciones fijo se comporta de forma distinta según el tamaño de la instancia. En la 40 × 40 la búsqueda se estanca antes de terminar; en la 50 × 20 sigue mejorando de manera gradual; y en la 100 × 100, con 10 000 operaciones frente a las 1 600 de la 40 × 40, el
+mismo presupuesto equivale a muchas menos iteraciones por operación, por lo que la curva no llega a estabilizarse. Además, en las tres instancias la mayor parte de la mejora ocurre al inicio de la búsqueda, aunque en la 100 × 100 se reparte más a lo largo de toda la corrida.
+
+\subsection{Intento de partir de una solución no factible}
+
+La versión inicial del algoritmo generaba la solución de partida mezclando de forma independiente el orden de las operaciones en cada máquina, sin respetar el orden de los trabajos. Esto producía calendarios con ciclos en la grafica de precedencias. Con la penalización original, que cuenta los nodos que el algoritmo de Kahn deja sin procesar, la búsqueda no lograba alcanzar factibilidad: esa métrica incluye a todos los descendientes de un ciclo, por lo que casi no cambia al aplicar un intercambio local y el costo queda en una meseta sin gradiente. Ajustar los parámetros del algoritmo no modificó el resultado.
+
+Para dar gradiente a la búsqueda se probó una medida de infactibilidad más fina: una variante de Kahn que, al atascarse, fuerza el nodo con menos predecesores pendientes y cuenta los arcos ignorados, como estimación del número de arcos que habría que eliminar para romper los ciclos. Esta variante no funcionó en la práctica. Su costo computacional es mayor, porque cada atasco recorre todos los nodos, y una sola corrida tardó una hora. Además, la solución final siguió siendo infactible. No se llegó a aislar la causa exacta, pero la búsqueda seguía partiendo de un espacio lleno de ciclos, con movimientos de intercambio adyacente poco informados, y la escala de la penalización frente al umbral de aceptación seguía sin ajustarse.
+
+Por esas razones no se continuó por ese camino. Se optó por construir la solución inicial de forma incremental, eligiendo en cada paso la siguiente operación pendiente de un trabajo al azar. Esa construcción es factible por diseño, porque el orden de inserción es un orden topológico válido de la  grafica. Con ello se volvió al algoritmo de Kahn estricto, que es mucho más rápido, y las soluciones finales de todas las corridas resultaron factibles.
 
 % =====================================================
 % 3. CONCLUSIÓN
 % =====================================================
 \section{Conclusión}
 
+El desarrollo de este proyecto permitió implementar y evaluar la heurística Old Bachelor Acceptance (OBA), específicamente su variante OBA2-N, como método de búsqueda local para resolver el problema de programación de trabajos en máquinas (Job-Shop Scheduling Problem, JSSP). A través de su implementación en Go, se integraron los mecanismos necesarios para modelar las instancias, representar los calendarios, evaluar su factibilidad, generar soluciones vecinas y controlar el proceso de búsqueda mediante un umbral dinámico de aceptación.
+
+Los resultados experimentales muestran que OBA2-N es capaz de encontrar soluciones factibles para las tres instancias evaluadas: 40 $\times$ 40, 50 $\times$ 20 y 100 $\times$ 100. Esto demuestra que la heurística puede aplicarse a problemas de diferentes dimensiones, obteniendo calendarios válidos que respetan las restricciones de precedencia entre operaciones y de utilización de las máquinas. Entre los mejores resultados obtenidos se alcanzaron makespans de 181, 5\,974 y 106\,977, respectivamente.
+
+Asimismo, los experimentos permitieron identificar que la semilla aleatoria influye en la calidad de las soluciones encontradas. Aunque todas las ejecuciones utilizaron la misma configuración y el mismo número de iteraciones, se obtuvieron resultados diferentes. Sin embargo, la diferencia relativa entre la mejor y la peor solución de cada instancia se mantuvo aproximadamente entre el 2.5\% y el 3.3\%. Esto muestra que, a pesar de la variabilidad introducida por las decisiones aleatorias, el algoritmo presentó un comportamiento relativamente consistente en las ejecuciones realizadas.
+
+Por otra parte, el análisis de las gráficas permitió observar que el comportamiento de la búsqueda depende del tamaño de la instancia. En la instancia 40 $\times$ 40 se identificó un estancamiento antes de completar las iteraciones, mientras que en la instancia 50 $\times$ 20 todavía se presentaban mejoras graduales. En la instancia 100 $\times$ 100, las curvas mantuvieron una tendencia descendente hasta el final de la ejecución. Esto sugiere que un millón de iteraciones no representa necesariamente un presupuesto suficiente para todas las dimensiones del problema y que  sería conveniente adaptar el esfuerzo de búsqueda al tamaño de cada instancia.
+
+En conclusión, la implementación de OBA2-N permitió comprobar su aplicabilidad como una alternativa heurística para resolver instancias del JSSP Aunque los resultados obtenidos no permiten afirmar que se alcanzaron soluciones óptimas, sí muestran que el algoritmo es capaz de generar calendarios factibles y de buena calidad, además de proporcionar información útil sobre la influencia de la inicialización, las semillas aleatorias y el presupuesto de búsqueda en el desempeño de la heurística.
 
 % =====================================================
 % 4. REFERENCIAS

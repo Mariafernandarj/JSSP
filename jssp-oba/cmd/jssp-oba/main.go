@@ -7,6 +7,8 @@ import (
 	"jssp-oba/internal/problem"
 	"jssp-oba/internal/solver"
 	"log"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -44,6 +46,12 @@ func main() {
 	fmt.Printf("Cota inferior (LB): %d\n", instance.LowerBound)
 	fmt.Printf("Cota superior (UB): %d\n", instance.UpperBound)
 
+	// Nombre de la instancia para etiquetar los archivos (p. ej. "JSSP_50_20")
+	instanceName := strings.TrimSuffix(
+		filepath.Base(*instancePath),
+		filepath.Ext(*instancePath),
+	)
+
 	// Leer configuración
 	config, err := oba.LoadConfig(*configPath)
 	if err != nil {
@@ -59,6 +67,7 @@ func main() {
 	// Ejecutar experimento.
 	err = solver.RunExperiments(
 		instance,
+		instanceName,
 		config,
 		seeds,
 	)

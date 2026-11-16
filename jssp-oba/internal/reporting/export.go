@@ -16,6 +16,8 @@ func ExportResult(
 	instance *problem.Instance,
 	result oba.Result,
 	elapsed time.Duration,
+	label string,
+	seed int64,
 ) (string, error) {
 
 	if instance == nil {
@@ -123,9 +125,14 @@ func ExportResult(
 
 	fmt.Fprintf(
 		&builder,
-		"Costo: %.6f\n\n",
+		"Costo: %.6f\n",
 		result.Best.Cost,
 	)
+
+	fmt.Fprintf(file, "Cota inferior (LB): %d\n", instance.LowerBound)
+	fmt.Fprintf(file, "Cota superior (UB): %d\n", instance.UpperBound)
+	fmt.Fprintf(file, "Brecha respecto a LB: %.2f%%\n",
+		100*float64(result.Best.Makespan-instance.LowerBound)/float64(instance.LowerBound))
 
 	// ------------------------------------------------
 	// Información de la ejecución
@@ -157,15 +164,39 @@ func ExportResult(
 		elapsed.Seconds(),
 	)
 
-	fmt.Fprintf(file, "Cota inferior (LB): %d\n", instance.LowerBound)
-	fmt.Fprintf(file, "Cota superior (UB): %d\n", instance.UpperBound)
-	fmt.Fprintf(file, "Brecha respecto a LB: %.2f%%\n",
-		100*float64(result.Best.Makespan-instance.LowerBound)/float64(instance.LowerBound))
-
 	// Escribir el contenido en el archivo.
 	if _, err := file.WriteString(builder.String()); err != nil {
 		return "", fmt.Errorf("error al escribir el archivo: %w", err)
 	}
 
+	histPath := filepath.Join(outputDir, "history_"+label+".csv")
+	if err := ExportHistory(histPath, instance, label, seed, result.History); err != nil {
+		return "", fmt.Errorf("no se pudo escribir el historial: %w", err)
+	}
+
 	return path, nil
+}
+
+func ExportHistory(
+	path string,
+	in *problem.Instance,
+	name string,
+	seed int64,
+	h []oba.Point,
+) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	fmt.Fprintf(f, "# instance=%s seed=%d LB=%d UB=%d\n",
+		name, seed, in.LowerBound, in.UpperBound)
+	fmt.Fprintln(f, "iteration,current_makespan,best_makespan,current_cost,best_cost,threshold,accepted")
+	for _, p := range h {
+		fmt.Fprintf(f, "%d,%d,%d,%.8f,%.8f,%.8f,%d\n",
+			p.Iteration, p.CurrentMakespan, p.BestMakespan,
+			p.CurrentCost, p.BestCost, p.Threshold, p.Accepted)
+	}
+	return nil
 }

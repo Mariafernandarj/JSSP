@@ -8,9 +8,10 @@ import (
 
 // Config contiene los parámetros para OBA2-N
 type Config struct {
-	Iterations int     `json:"iterations"`
-	DeltaUnits float64 `json:"delta"`
-	EasyAge    int     `json:"easy_age"`
+	Iterations    int     `json:"iterations"`
+	DeltaUnits    float64 `json:"delta"`
+	EasyAge       int     `json:"easy_age"`
+	HistoryPoints int     `json:"history_points"`
 }
 
 // DefaultConfig devuelve parámetros iniciales

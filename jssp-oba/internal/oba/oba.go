@@ -17,6 +17,17 @@ type Result struct {
 	Iterations     int
 	Accepted       int
 	FinalThreshold float64
+	History        []Point
+}
+
+type Point struct {
+	Iteration       int
+	CurrentMakespan int
+	BestMakespan    int
+	CurrentCost     float64
+	BestCost        float64
+	Threshold       float64
+	Accepted        int
 }
 
 // Solve ejecuta OBA-N desde una solución inicial
@@ -38,6 +49,15 @@ func Solve(
 	if config.EasyAge < 1 {
 		return nil, fmt.Errorf("EasyAge debe ser al menos uno")
 	}
+
+	step := 0
+	if config.HistoryPoints > 0 {
+		step = config.Iterations / config.HistoryPoints
+		if step < 1 {
+			step = 1
+		}
+	}
+	history := make([]Point, 0, config.HistoryPoints)
 
 	span := float64(in.UpperBound - in.LowerBound)
 	if span <= 0 {
@@ -102,12 +122,26 @@ func Solve(
 			threshold -= float64(count) * delta
 		} else {
 			//Rechaza el vecino e incrementa la edad
+
 			age++
 			threshold += delta / float64(config.EasyAge)
 			count = 1
 		}
 
 		threshold = clampThreshold(threshold)
+
+		if step > 0 && (i+1)%step == 0 {
+			history = append(history, Point{
+				Iteration:       i + 1,
+				CurrentMakespan: currentEval.Makespan,
+				BestMakespan:    bestEval.Makespan,
+				CurrentCost:     currentEval.Cost,
+				BestCost:        bestEval.Cost,
+				Threshold:       threshold,
+				Accepted:        accepted,
+			})
+		}
+
 	}
 
 	return &Result{
@@ -116,5 +150,6 @@ func Solve(
 		Iterations:     completed,
 		Accepted:       accepted,
 		FinalThreshold: threshold,
+		History:        history,
 	}, nil
 }

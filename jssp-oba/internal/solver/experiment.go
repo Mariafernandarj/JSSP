@@ -13,6 +13,7 @@ import (
 
 func RunExperiments(
 	in *problem.Instance,
+	instanceName string,
 	config oba.Config,
 	seeds []int64,
 ) error {
@@ -72,13 +73,15 @@ func RunExperiments(
 			elapsed.Seconds(),
 		)
 
-		// Exportar resultado
-		// Adaptar esta llamada a la firma real de ExportResult
+		// Exportar resultado e historial
+		label := fmt.Sprintf("%s_seed%d", instanceName, seed)
 		_, err = reporting.ExportResult(
 			"data/results",
 			in,
 			*result,
 			elapsed,
+			label,
+			seed,
 		)
 
 		if err != nil {
